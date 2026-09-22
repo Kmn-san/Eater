@@ -13,10 +13,16 @@ export const protectRoute = async (req, res, next) => {
     const token = authHeader.split(' ')[1]
 
     const existToken = await sessionService.findSession(token)
-    
+
     if (!existToken) {
         return res.status(401).json({
-            success: false, message: "Invalid or expired token."
+            success: false,code:"INVALID_TOKEN",message: "Invalid token."
+        })
+    }
+
+    if (existToken.expired_at && existToken.expired_at <= new Date()) {
+        return res.status(401).json({
+            success: false,code:"SESSION_EXPIRED", message: "Session expired."
         })
     }
 

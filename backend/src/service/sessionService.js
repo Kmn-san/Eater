@@ -29,12 +29,13 @@ export const findSession = async (token) => {
         SELECT
             g.id AS session_id,
             g.table_id AS table_id,
-            t.restaurant_id 
+            t.restaurant_id,
+            g.expired_at
+            
         FROM guest_sessions g
         JOIN restaurant_table t
             ON t.id = g.table_id 
-        WHERE g.token_hash = $1  
-        AND (g.expired_at IS NULL OR g.expired_at > NOW())   
+        WHERE g.token_hash = $1 
         `, [tokenHash])
     return rows[0];
 }

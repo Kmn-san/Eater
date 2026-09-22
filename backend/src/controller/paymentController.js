@@ -12,6 +12,12 @@ export const payment = async (req, res) => {
             data: result
         })
     } catch (error) {
+        if (error.code) {
+            return res.status(400).json({
+                code: error.code,
+                error: error.message
+            });
+        }
         console.error("Error in processPayment controller: ", error.message);
         return res.status(500).json({
             code: "INTERNAL_SERVER_ERROR",
