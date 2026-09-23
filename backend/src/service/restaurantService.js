@@ -4,7 +4,8 @@ export const verifyRestaurantAndTable = async (restaurant_code, table_code) => {
     const { rows } = await query(`
         SELECT 
             t.id AS table_id,
-            r.id AS restaurant_id
+            r.id AS restaurant_id,
+            r.name
         FROM restaurant r
         JOIN restaurant_table t
             ON r.id = t.restaurant_id
