@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchRestaurant } from "../lib/api";
+import LoadingState from "../component/LoadingState";
+import ErrorState from "../component/ErrorState";
 
 export default function TableEntryPage() {
     const { restaurantCode, tableCode } = useParams();
@@ -15,8 +17,9 @@ export default function TableEntryPage() {
         const startSession = async () => {
             try {
                 const res = await fetchRestaurant({ restaurantCode, tableCode });
-                setRestaurantName(res.restaurantName);
 
+                setRestaurantName(res.restaurantName);
+                localStorage.setItem("token", res.token);
                 timer = setTimeout(() => {
                     navigate(`/restaurant/${restaurantCode}/menu`);
                 }, 3000);
@@ -34,29 +37,13 @@ export default function TableEntryPage() {
         };
     }, [restaurantCode, tableCode, navigate]);
 
-    // Loading State (just a spinner)
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-base-100">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
-            </div>
-        );
+        <LoadingState />
     }
 
-    // Error State
     if (error) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 p-4 text-center">
-                <div className="text-error text-5xl mb-4">⚠️</div>
-                <h2 className="text-xl font-bold text-error mb-2">Oops!</h2>
-                <p className="text-base-content/70 mb-6">{error}</p>
-                <button
-                    className="btn btn-primary"
-                    onClick={() => window.location.reload()}
-                >
-                    Try Again
-                </button>
-            </div>
+            <ErrorState />
         );
     }
 
