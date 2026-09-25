@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import TableEntryPage from "./pages/TableEntryPage"
 import MenuPage from "./pages/MenuPage"
+import DetailPage from "./pages/DetailPage"
 function App() {
 
   return (
@@ -15,6 +16,10 @@ function App() {
           path="/restaurant/:restaurantCode/menu"
           element={<MenuPage />}
         />
+
+        <Route
+          path="/menu/:restaurantCode/:itemId"
+          element={<DetailPage />} />
       </Routes>
     </BrowserRouter>
   )

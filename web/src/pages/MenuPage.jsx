@@ -83,7 +83,8 @@ function MenuPage() {
                     displayItems={displayItems} />
 
                 {/* MENU GRID */}
-                <MenuGrid displayItems={displayItems} />
+                <MenuGrid displayItems={displayItems}
+                    restaurantCode={restaurantCode} />
             </div >
         </div >
     )

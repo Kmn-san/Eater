@@ -1,4 +1,4 @@
-import { Menu, Utensils } from 'lucide-react';
+import { Utensils } from 'lucide-react';
 
 export default function Header({ menu }) {
     return (
@@ -18,14 +18,6 @@ export default function Header({ menu }) {
                         {menu.restaurant_name || 'Restaurant Menu'}
                     </h1>
                 </div>
-
-                <button
-                    type="button"
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-black/5 active:bg-black/10"
-                    aria-label="Open menu"
-                >
-                    <Menu size={23} />
-                </button>
             </div>
         </header>
 

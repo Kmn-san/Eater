@@ -55,8 +55,11 @@ export const fetchItemDetail = async (restaurant_code, item_id) => {
             i.image_url,
             i.description,
             i.price_cents,
+            i.is_available,
 
             o.id AS option_id,
+            o.min_select,
+            o.max_select,
             o.name AS option,
 
             v.id AS option_value_id,
@@ -86,9 +89,11 @@ export const fetchItemDetail = async (restaurant_code, item_id) => {
 
     const result = {
         item_name: rows[0]?.name,
+        is_available: rows[0]?.item_is_available,
         image_url: rows[0]?.image_url,
         description: rows[0]?.description,
         price_cents: rows[0]?.price_cents,
+        is_available: rows[0]?.is_available,
         options: []
     }
     rows.forEach(row => {
@@ -96,21 +101,27 @@ export const fetchItemDetail = async (restaurant_code, item_id) => {
             return;
         }
         let option = result.options.find(
-            o => o.option === row.option
+            o => o.id === row.option_id
         )
+
         if (!option) {
             option = {
                 id: row.option_id,
                 name: row.option,
+                min_select: row.min_select,
+                max_select: row.max_select,
                 option_value: []
             }
             result.options.push(option)
+
         }
-        option.option_value.push({
-            id: row.option_value_id,
-            name: row.option_value_name,
-            price_delta_cents: row.price_delta_cents
-        })
+        if (row.option_value_id) {
+            option.option_value.push({
+                id: row.option_value_id,
+                name: row.option_value_name,
+                price_delta_cents: row.price_delta_cents
+            })
+        }
     })
     return result
 }
