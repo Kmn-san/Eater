@@ -97,7 +97,7 @@ function MenuPage() {
             </div >
             {cart.length > 0 &&
                 <BottomBar
-                    onButtonClick={() => navigate(`/cart`)} totalCents={totalCents} itemCount={cart.length} />}
+                    onButtonClick={() => navigate(`/restaurant/${restaurantCode}/cart`)} totalCents={totalCents} itemCount={cart.length} />}
         </div >
     )
 }

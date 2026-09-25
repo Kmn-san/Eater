@@ -1,20 +1,10 @@
 import React, { useState } from 'react'
 import { formatPrice } from '../../utlis/formatPrice'
 
-function BottomCartBar({ totalPrice, isOptionValue, item, handleAddToCart, showNotice }) {
+function BottomCartBar({ totalPrice, isOptionValue, item, handleAddToCart }) {
 
     return (
         <>
-            {/* Notice */}
-            {
-                showNotice && !isOptionValue && (
-                    <div className="fixed bottom-24 left-4 right-4 z-40">
-                        <div className="mx-auto max-w-md rounded-xl bg-gray-900 px-4 py-3 text-center text-sm text-white shadow-lg">
-                            Please select the required options first.
-                        </div>
-                    </div>
-                )
-            }
             <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-gray-100 bg-white p-4 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
 
                 <div className="mx-auto flex max-w-md items-center gap-4">

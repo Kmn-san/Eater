@@ -29,7 +29,7 @@ function DetailPage() {
     const handleAddToCart = () => {
         if (!isOptionValue) {
             setShowNotice(true);
-            return;
+            return
         }
         addToCart({
             id: itemId,
@@ -109,7 +109,7 @@ function DetailPage() {
         0
     );
     const basePrice = item?.price_cents ?? 0
-    const totalPrice = basePrice + optionPrice
+    const totalPrice = (basePrice + optionPrice) * quantity
 
     const isOptionValue = item?.options?.every((option) => {
         const selectedCount = selectedOptions[option.id]?.length || 0;
@@ -137,7 +137,7 @@ function DetailPage() {
             <div className="relative -mt-6 rounded-t-3xl bg-[#FFFFF0] px-4 pt-6">
                 <ItemDetail item={item} />
 
-                <Option item={item} handleOptionSelect={handleOptionSelect} selectedOptions={selectedOptions} />
+                <Option item={item} handleOptionSelect={handleOptionSelect} selectedOptions={selectedOptions} showNotice={showNotice} />
 
                 <Quantity quantity={quantity} setQuantity={setQuantity} />
 
@@ -145,7 +145,7 @@ function DetailPage() {
 
             </div>
 
-            <BottomCartBar totalPrice={totalPrice} isOptionValue={isOptionValue} item={item} handleAddToCart={handleAddToCart} showNotice={showNotice} />
+            <BottomCartBar totalPrice={totalPrice} isOptionValue={isOptionValue} item={item} handleAddToCart={handleAddToCart} />
         </div>
     );
 }

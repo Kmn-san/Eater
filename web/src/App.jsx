@@ -23,7 +23,7 @@ function App() {
           element={<DetailPage />} />
 
         <Route
-          path="/cart"
+          path="/restaurant/:restaurantCode/cart"
           element={<CartPage />}
         />
       </Routes>

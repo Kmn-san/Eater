@@ -1,5 +1,4 @@
 import { Minus, Plus } from 'lucide-react'
-import React from 'react'
 
 function Quantity({ setQuantity, quantity }) {
     return (
