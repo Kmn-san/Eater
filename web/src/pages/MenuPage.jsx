@@ -6,9 +6,8 @@ import CategoryTabs from "../component/MenuPage/CAtegoryTabs";
 import EmptyState from "../component/MenuPage/EmptyState";
 import BottomCartBar from "../component/MenuPage/BottomCartBar";
 import MenuGrid from "../component/MenuPage/MenuGrid";
-
-// --- Mock Data ---
-const CATEGORIES = ["Rice", "Noodles", "Snacks", "Desserts"];
+import useMenu from "../hooks/useMenu";
+import LoadingState from "../component/LoadingState";
 
 const MENU_ITEMS = [
     {
@@ -125,19 +124,24 @@ const MENU_ITEMS = [
 export default function MenuPage() {
     const { restaurantCode } = useParams();
     const navigate = useNavigate();
-
     // --- State ---
     const [activeCategory, setActiveCategory] = useState("All");
     const [cart, setCart] = useState([]);
+
+    const { data: menu, isLoading } = useMenu(restaurantCode)
+
+    const CATEGORIES = [
+        ...new Set(
+            (menu?.categories ?? []).map(category =>
+                category.name)
+        )
+    ]
 
     // --- Filter items based on active category ---
     const filteredItems =
         activeCategory === "All"
             ? MENU_ITEMS
             : MENU_ITEMS.filter((item) => item.category === activeCategory);
-
-    // --- Price formatter: cents → RM X.XX ---
-    const formatPrice = (cents) => `RM ${(cents / 100).toFixed(2)}`;
 
     // --- Add item to cart ---
     const handleAddToCart = (item) => {
@@ -168,10 +172,13 @@ export default function MenuPage() {
         });
     };
 
+    if (isLoading) {
+        return <LoadingState />
+    }
     return (
         <div className="min-h-screen bg-[#FBF3DF] font-[Inter] text-[#241A12] pb-28">
             {/* ===== Header ===== */}
-            <Header />
+            <Header name={menu.restaurant_name} />
 
             {/* ===== Search Bar ===== */}
             <SearchBar />

@@ -1,7 +1,7 @@
 import { UtensilsCrossed } from 'lucide-react'
 
 
-function Header() {
+function Header({ name }) {
     return (
         <header className="overflow-hidden px-4 pt-5 pb-4 relative top-0 bg-[#FBF3DF] z-20">
             <div
@@ -11,7 +11,7 @@ function Header() {
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
                         <UtensilsCrossed size={20} className="text-[#D6402C]" />
-                        Restaurant Menu
+                        {name}
                     </h1>
                 </div>
             </div>
