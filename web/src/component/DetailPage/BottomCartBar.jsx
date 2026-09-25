@@ -1,18 +1,7 @@
 import React, { useState } from 'react'
 import { formatPrice } from '../../utlis/formatPrice'
 
-function BottomCartBar({ totalPrice, isOptionValue, item }) {
-    const [showNotice, setShowNotice] = useState(false);
-
-    const handleAddToCart = () => {
-        if (!isOptionValue) {
-            setShowNotice(true);
-            return;
-        }
-
-        // Add to cart logic later
-        console.log("Add to cart");
-    };
+function BottomCartBar({ totalPrice, isOptionValue, item, handleAddToCart, showNotice }) {
 
     return (
         <>

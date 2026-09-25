@@ -1,9 +1,27 @@
 import { Plus, UtensilsCrossed } from 'lucide-react'
 import { formatPrice } from '../../utlis/formatPrice'
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../../context/cartContext';
 
 export default function MenuGrid({ displayItems, restaurantCode }) {
     const navigate = useNavigate();
+    const { addToCart } = useCart();
+
+    const handleAdd = (item) => {
+        if (item.requires_options) {
+            navigate(`/menu/${restaurantCode}/${item.id}`)
+            return;
+        }
+        addToCart({
+            id: item.id,
+            name: item.name,
+            image: item.image,
+            price_cents: item.price_cents,
+            selectedOptions: [],
+            quantity: 1,
+            specialNote: ""
+        })
+    }
     return (
         <div className="grid grid-cols-2 gap-3 px-4" >
             {displayItems.map((item) => (
@@ -43,12 +61,14 @@ export default function MenuGrid({ displayItems, restaurantCode }) {
                                 {formatPrice(item.price_cents)}
                             </span>
                             <button
-                                // onClick={(e) => {
-                                //   e.stopPropagation();handleAddToCart(item)}}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleAdd(item);
+                                }}
                                 disabled={!item.is_available}
-                                className={`btn btn-xs btn-circle border-none ${item.is_available
-                                    ? "bg-[#FF5A3C] hover:bg-[#e04a30] text-white"
-                                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                className={`btn btn-circle btn-xs border-none ${item.is_available
+                                    ? "bg-[#FF5A3C] text-white hover:bg-[#e04a30]"
+                                    : "cursor-not-allowed bg-gray-200 text-gray-400"
                                     }`}
                             >
                                 <Plus
@@ -59,7 +79,8 @@ export default function MenuGrid({ displayItems, restaurantCode }) {
                         </div>
                     </div>
                 </div>
-            ))}
-        </div>
+            ))
+            }
+        </div >
     )
 }

@@ -11,6 +11,7 @@ import Option from '../component/DetailPage/Option';
 import Quantity from '../component/DetailPage/Quantity';
 import Note from '../component/DetailPage/Note';
 import BottomCartBar from '../component/DetailPage/BottomCartBar';
+import { useCart } from '../context/cartContext';
 
 function DetailPage() {
     const { restaurantCode, itemId } = useParams();
@@ -21,6 +22,27 @@ function DetailPage() {
     const [selectedOptions, setSelectedOptions] = useState({})
     const [quantity, setQuantity] = useState(1);
     const [specialNote, setSpecialNote] = useState("");
+    const [showNotice, setShowNotice] = useState(false);
+    const navigate = useNavigate();
+    const { addToCart } = useCart();
+
+    const handleAddToCart = () => {
+        if (!isOptionValue) {
+            setShowNotice(true);
+            return;
+        }
+        addToCart({
+            id: itemId,
+            name: item.item_name,
+            image: item.image_url,
+            price_cents: item.price_cents,
+            selectedOptions,
+            quantity,
+            specialNote
+        })
+
+        navigate(-1)
+    }
 
     useEffect(() => {
 
@@ -111,13 +133,19 @@ function DetailPage() {
         <div className="min-h-screen bg-[#FFFFF0] text-[#1F1F1F] pb-28">
 
             <ImageHeader item={item} />
+
             <div className="relative -mt-6 rounded-t-3xl bg-[#FFFFF0] px-4 pt-6">
                 <ItemDetail item={item} />
+
                 <Option item={item} handleOptionSelect={handleOptionSelect} selectedOptions={selectedOptions} />
+
                 <Quantity quantity={quantity} setQuantity={setQuantity} />
+
                 <Note setSpecialNote={setSpecialNote} specialNote={specialNote} />
+
             </div>
-            <BottomCartBar totalPrice={totalPrice} isOptionValue={isOptionValue} item={item} />
+
+            <BottomCartBar totalPrice={totalPrice} isOptionValue={isOptionValue} item={item} handleAddToCart={handleAddToCart} showNotice={showNotice} />
         </div>
     );
 }

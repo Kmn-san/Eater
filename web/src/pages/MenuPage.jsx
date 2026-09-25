@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { fetchMenu } from '../lib/api';
 import LoadingState from '../component/LoadingState';
 import ErrorState from '../component/ErrorState';
@@ -7,20 +7,29 @@ import Header from '../component/Menu/Header';
 import SearchBar from '../component/Menu/SearchBar';
 import Category from '../component/Menu/Category';
 import MenuGrid from '../component/Menu/MenuGrid';
+import BottomBar from '../component/Menu/BottomBar';
+import { useCart } from '../context/cartContext';
+
 
 function MenuPage() {
     const { restaurantCode } = useParams();
+    const navigate = useNavigate();
+    const { cart } = useCart();
 
     const [menu, setMenu] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [activeCategory, setActiveCategory] = useState("All")
+    const totalCents = cart.reduce(
+        (total, item) => total + item.price_cents * item.quantity, 0
+    )
 
     useEffect(() => {
         const fetchMenuData = async () => {
             try {
                 const res = await fetchMenu(restaurantCode)
                 setMenu(res.result)
+
             } catch (error) {
                 console.error(error);
                 setError("Unable to load the menu. Please try again.");
@@ -86,6 +95,9 @@ function MenuPage() {
                 <MenuGrid displayItems={displayItems}
                     restaurantCode={restaurantCode} />
             </div >
+            {cart.length > 0 &&
+                <BottomBar
+                    onButtonClick={() => navigate(`/cart`)} totalCents={totalCents} itemCount={cart.length} />}
         </div >
     )
 }

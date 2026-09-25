@@ -10,7 +10,14 @@ export const fetchMenu = async (restaurant_code) => {
             i.price_cents as item_price_cents,
             i.is_available,
             i.image_url,
-            i.id
+            i.id, 
+            EXISTS (
+                SELECT 1
+                FROM menu_options o
+                WHERE o.menu_item_id = i.id
+                AND o.min_select > 0
+            ) AS requires_options
+
         FROM menu_items i
         JOIN menu_categories c
             ON c.id = i.category_id
@@ -41,7 +48,8 @@ export const fetchMenu = async (restaurant_code) => {
             name: row.item_name,
             image: row.image_url,
             price_cents: row.item_price_cents,
-            is_available: row.is_available
+            is_available: row.is_available,
+            requires_options: row.requires_options
         })
     })
     return result;
