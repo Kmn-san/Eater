@@ -1,105 +1,205 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom';
-import { fetchMenu } from '../lib/api';
-import LoadingState from '../component/LoadingState';
-import ErrorState from '../component/ErrorState';
-import Header from '../component/Menu/Header';
-import SearchBar from '../component/Menu/SearchBar';
-import Category from '../component/Menu/Category';
-import MenuGrid from '../component/Menu/MenuGrid';
-import BottomBar from '../component/Menu/BottomBar';
-import { useCart } from '../context/cartContext';
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Header from "../component/MenuPage/Header";
+import SearchBar from "../component/MenuPage/SearchBar";
+import CategoryTabs from "../component/MenuPage/CAtegoryTabs";
+import EmptyState from "../component/MenuPage/EmptyState";
+import BottomCartBar from "../component/MenuPage/BottomCartBar";
+import MenuGrid from "../component/MenuPage/MenuGrid";
+
+// --- Mock Data ---
+const CATEGORIES = ["Rice", "Noodles", "Snacks", "Desserts"];
+
+const MENU_ITEMS = [
+    {
+        id: 1,
+        name: "Nasi Lemak",
+        description: "Fragrant rice with sambal, egg and peanuts",
+        price: 850, // cents
+        image: "https://images.unsplash.com/photo-1596790011468-470938547032?auto=format&fit=crop&q=80&w=400&h=300",
+        category: "Rice",
+        isAvailable: true,
+    },
+    {
+        id: 2,
+        name: "Nasi Lemak Ayam",
+        description: "Nasi lemak with crispy fried chicken",
+        price: 1250,
+        image: "https://images.unsplash.com/photo-1596790011468-470938547032?auto=format&fit=crop&q=80&w=400&h=300",
+        category: "Rice",
+        isAvailable: true,
+    },
+    {
+        id: 3,
+        name: "Chicken Rice",
+        description: "Steamed chicken with fragrant rice",
+        price: 1100,
+        image: "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&q=80&w=400&h=300",
+        category: "Rice",
+        isAvailable: true,
+    },
+    {
+        id: 4,
+        name: "Mee Goreng",
+        description: "Spicy stir-fried noodles",
+        price: 950,
+        image: "https://images.unsplash.com/photo-1612929633738-8fe44d8e8f47?auto=format&fit=crop&q=80&w=400&h=300",
+        category: "Noodles",
+        isAvailable: true,
+    },
+    {
+        id: 5,
+        name: "Mee Goreng Ayam",
+        description: "Stir-fried noodles with chicken",
+        price: 1250,
+        image: "https://images.unsplash.com/photo-1612929633738-8fe44d8e8f47?auto=format&fit=crop&q=80&w=400&h=300",
+        category: "Noodles",
+        isAvailable: true,
+    },
+    {
+        id: 6,
+        name: "Curry Laksa",
+        description: "Rich coconut curry noodle soup",
+        price: 1200,
+        image: "https://images.unsplash.com/photo-1612929633738-8fe44d8e8f47?auto=format&fit=crop&q=80&w=400&h=300",
+        category: "Noodles",
+        isAvailable: true,
+    },
+    {
+        id: 7,
+        name: "Milk Tea",
+        description: "Classic sweet milk tea with pearls",
+        price: 550,
+        image: "https://images.unsplash.com/photo-1558857563-b371033873b8?auto=format&fit=crop&q=80&w=400&h=300",
+        category: "Drinks",
+        isAvailable: true,
+    },
+    {
+        id: 8,
+        name: "Teh Tarik",
+        description: "Malaysian pulled milk tea",
+        price: 500,
+        image: "https://images.unsplash.com/photo-1558857563-b371033873b8?auto=format&fit=crop&q=80&w=400&h=300",
+        category: "Drinks",
+        isAvailable: true,
+    },
+    {
+        id: 9,
+        name: "Curry Puff",
+        description: "Crispy pastry filled with curry",
+        price: 350,
+        image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&q=80&w=400&h=300",
+        category: "Snacks",
+        isAvailable: true,
+    },
+    {
+        id: 10,
+        name: "Fried Chicken Wings",
+        description: "Golden crispy wings",
+        price: 850,
+        image: "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&q=80&w=400&h=300",
+        category: "Snacks",
+        isAvailable: false, // Sold out example
+    },
+    {
+        id: 11,
+        name: "Cendol",
+        description: "Shaved ice dessert with pandan jelly",
+        price: 650,
+        image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=400&h=300",
+        category: "Desserts",
+        isAvailable: true,
+    },
+    {
+        id: 12,
+        name: "Ice Cream Scoop",
+        description: "Choice of vanilla, chocolate or strawberry",
+        price: 450,
+        image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=400&h=300",
+        category: "Desserts",
+        isAvailable: true,
+    },
+];
 
 
-function MenuPage() {
+export default function MenuPage() {
     const { restaurantCode } = useParams();
     const navigate = useNavigate();
-    const { cart } = useCart();
 
-    const [menu, setMenu] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-    const [activeCategory, setActiveCategory] = useState("All")
-    const totalCents = cart.reduce(
-        (total, item) => total + item.price_cents * item.quantity, 0
-    )
+    // --- State ---
+    const [activeCategory, setActiveCategory] = useState("All");
+    const [cart, setCart] = useState([]);
 
-    useEffect(() => {
-        const fetchMenuData = async () => {
-            try {
-                const res = await fetchMenu(restaurantCode)
-                setMenu(res.result)
-
-            } catch (error) {
-                console.error(error);
-                setError("Unable to load the menu. Please try again.");
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchMenuData();
-    }, [restaurantCode])
-
-    const flattenedMenu = useMemo(() => {
-        if (!menu) return { categories: [], itemsByCategory: {} }
-
-        const itemsByCategory = {};
-
-        menu.categories.forEach((cat) => {
-            if (!itemsByCategory[cat.name]) {
-                itemsByCategory[cat.name] = []
-            }
-            itemsByCategory[cat.name].push(...cat.items)
-        })
-        return {
-            categories: Object.keys(itemsByCategory),
-            itemsByCategory
-        }
-    }, [menu])
-
-    if (loading) {
-        return <LoadingState />
-    }
-
-    if (error) {
-        return <ErrorState message={error} />
-    }
-
-    if (!menu) {
-        return <ErrorState message="Menu not found." />
-    }
-
-    const displayCategories = ["All", ...flattenedMenu.categories]
-    const displayItems =
+    // --- Filter items based on active category ---
+    const filteredItems =
         activeCategory === "All"
-            ? Object.values(flattenedMenu.itemsByCategory).flat()
-            : flattenedMenu.itemsByCategory[activeCategory] || []
+            ? MENU_ITEMS
+            : MENU_ITEMS.filter((item) => item.category === activeCategory);
+
+    // --- Price formatter: cents → RM X.XX ---
+    const formatPrice = (cents) => `RM ${(cents / 100).toFixed(2)}`;
+
+    // --- Add item to cart ---
+    const handleAddToCart = (item) => {
+        setCart((prevCart) => {
+            // Check if item already in cart
+            const existing = prevCart.find((c) => c.id === item.id);
+
+            if (existing) {
+                // Increment quantity
+                return prevCart.map((c) =>
+                    c.id === item.id ? { ...c, qty: c.qty + 1 } : c
+                );
+            } else {
+                // Add new item with qty 1
+                return [...prevCart, { ...item, qty: 1 }];
+            }
+        });
+    };
+
+    // --- Derived cart totals ---
+    const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+    const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+    // --- Navigate to detail page (pass item via state) ---
+    const handleOpenDetail = (item) => {
+        navigate(`/restaurant/${restaurantCode}/item/${item.id}`, {
+            state: { item },
+        });
+    };
 
     return (
-        <div className="min-h-screen bg-[#FFFFF0] text-[#1F1F1F]">
-            <div className="mx-auto min-h-screen w-full max-w-md bg-[#FFFFF0] pb-28 shadow-sm">
-                {/* HEADER */}
-                <Header menu={menu} />
+        <div className="min-h-screen bg-[#FBF3DF] font-[Inter] text-[#241A12] pb-28">
+            {/* ===== Header ===== */}
+            <Header />
 
-                {/* SEARCH BAR */}
-                <SearchBar />
+            {/* ===== Search Bar ===== */}
+            <SearchBar />
 
-                {/* CATEGORY  */}
-                <Category
-                    displayCategories={displayCategories}
-                    activeCategory={activeCategory}
-                    setActiveCategory={setActiveCategory}
-                    displayItems={displayItems} />
+            {/* ===== Category Tabs ===== */}
+            <CategoryTabs
+                categories={CATEGORIES}
+                activeCategory={activeCategory}
+                setActiveCategory={setActiveCategory} />
 
-                {/* MENU GRID */}
-                <MenuGrid displayItems={displayItems}
+            {/* ===== Menu Grid ===== */}
+            <MenuGrid
+                filteredItems={filteredItems}
+                handleOpenDetail={handleOpenDetail}
+                handleAddToCart={handleAddToCart} />
+
+            {/* ===== Empty State ===== */}
+            {filteredItems.length === 0 && (
+                <EmptyState />
+            )}
+
+            {/* ===== Sticky Bottom Cart Bar ===== */}
+            {cartCount > 0 && (
+                <BottomCartBar
+                    cartCount={cartCount}
+                    cartTotal={cartTotal}
                     restaurantCode={restaurantCode} />
-            </div >
-            {cart.length > 0 &&
-                <BottomBar
-                    onButtonClick={() => navigate(`/restaurant/${restaurantCode}/cart`)} totalCents={totalCents} itemCount={cart.length} />}
-        </div >
-    )
+            )}
+        </div>
+    );
 }
-
-export default MenuPage
