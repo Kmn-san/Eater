@@ -171,7 +171,7 @@ export default function MenuPage() {
 
     // --- Navigate to detail page (pass item via state) ---
     const handleOpenDetail = (item) => {
-        navigate(`/restaurant/${restaurantCode}/item/${item.id}`, {
+        navigate(`/menu/${restaurantCode}/${item.id}`, {
             state: { item },
         });
     };
