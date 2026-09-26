@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react';
+import { Plus, UtensilsCrossed } from 'lucide-react';
 import React from 'react'
 import { formatPrice } from '../../utlis/formatPrice';
 
@@ -13,13 +13,17 @@ function MenuGrid({ filteredItems, handleOpenDetail, handleAddToCart }) {
                 >
                     {/* Image */}
                     <div className="relative h-32 w-full bg-[#241A12]/5 overflow-hidden">
-                        <img
+                        {item.image ? (<img
                             src={item.image}
                             alt={item.name}
-                            className={`w-full h-full object-cover ${!item.isAvailable ? "grayscale opacity-60" : ""
+                            className={`w-full h-full object-cover ${!item.is_available ? "grayscale opacity-60" : ""
                                 }`}
-                        />
-                        {!item.isAvailable && (
+                        />) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                                <UtensilsCrossed size={54} className="text-[#D6402C]" />
+                            </div>
+                        )}
+                        {!item.is_available && (
                             <div className="absolute -left-9 top-3 w-32 -rotate-45 bg-[#241A12] text-[#FBF3DF] text-[10px] font-bold py-1 text-center shadow-sm">
                                 Sold out
                             </div>
@@ -37,15 +41,15 @@ function MenuGrid({ filteredItems, handleOpenDetail, handleAddToCart }) {
 
                         <div className="flex items-center justify-between mt-auto">
                             <span className="inline-block -rotate-2 bg-[#D6402C] text-white text-xs font-bold px-2 py-1 rounded-sm">
-                                {formatPrice(item.price)}
+                                {formatPrice(item.price_cents)}
                             </span>
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation(); // prevent card click
                                     handleAddToCart(item);
                                 }}
-                                disabled={!item.isAvailable}
-                                className={`btn btn-xs btn-circle border-none ${item.isAvailable
+                                disabled={!item.is_available}
+                                className={`btn btn-xs btn-circle border-none ${item.is_available
                                     ? "bg-[#241A12] hover:bg-[#0F6660] text-[#FBF3DF]"
                                     : "bg-[#241A12]/10 text-[#241A12]/30 cursor-not-allowed"
                                     }`}

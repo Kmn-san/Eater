@@ -8,6 +8,7 @@ import BottomCartBar from "../component/MenuPage/BottomCartBar";
 import MenuGrid from "../component/MenuPage/MenuGrid";
 import useMenu from "../hooks/useMenu";
 import LoadingState from "../component/LoadingState";
+import ErrorState from "../component/ErrorState";
 
 const MENU_ITEMS = [
     {
@@ -128,7 +129,7 @@ export default function MenuPage() {
     const [activeCategory, setActiveCategory] = useState("All");
     const [cart, setCart] = useState([]);
 
-    const { data: menu, isLoading } = useMenu(restaurantCode)
+    const { data: menu, isLoading, error } = useMenu(restaurantCode)
 
     const CATEGORIES = [
         ...new Set(
@@ -140,8 +141,11 @@ export default function MenuPage() {
     // --- Filter items based on active category ---
     const filteredItems =
         activeCategory === "All"
-            ? MENU_ITEMS
-            : MENU_ITEMS.filter((item) => item.category === activeCategory);
+            ? menu?.categories
+                ?.flatMap(category => category.items) ?? []
+            : menu?.categories
+                ?.find(category => category.name === activeCategory)
+                ?.items ?? []
 
     // --- Add item to cart ---
     const handleAddToCart = (item) => {
@@ -163,7 +167,7 @@ export default function MenuPage() {
 
     // --- Derived cart totals ---
     const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
-    const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    const cartTotal = cart.reduce((sum, item) => sum + item.price_cents * item.qty, 0);
 
     // --- Navigate to detail page (pass item via state) ---
     const handleOpenDetail = (item) => {
@@ -174,6 +178,10 @@ export default function MenuPage() {
 
     if (isLoading) {
         return <LoadingState />
+    }
+
+    if (error) {
+        return <ErrorState message={error.message} />
     }
     return (
         <div className="min-h-screen bg-[#FBF3DF] font-[Inter] text-[#241A12] pb-28">
