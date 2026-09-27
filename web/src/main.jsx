@@ -6,12 +6,15 @@ import {
 } from '@tanstack/react-query'
 import './index.css'
 import App from './App.jsx'
+import { CartProvider } from './context/CartContext.jsx'
 
 const queryClient = new QueryClient()
 createRoot(document.getElementById('root')).render(
   <QueryClientProvider client={queryClient}>
-    <StrictMode>
-      <App />
-    </StrictMode>,
+    <CartProvider>
+      <StrictMode>
+        <App />
+      </StrictMode>,
+    </CartProvider>
   </QueryClientProvider>
 )

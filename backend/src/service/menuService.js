@@ -96,6 +96,7 @@ export const fetchItemDetail = async (restaurant_code, item_id) => {
         `, [item_id, restaurant_code])
 
     const result = {
+        item_id: rows[0]?.item_id,
         item_name: rows[0]?.name,
         is_available: rows[0]?.item_is_available,
         image_url: rows[0]?.image_url,

@@ -1,13 +1,15 @@
 import { ArrowLeft, Heart, Share2, UtensilsCrossed } from 'lucide-react'
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
-function ImageHeader({item}) {
+function ImageHeader({ item }) {
+    const navigate = useNavigate();
     return (
         <div className="relative h-72 w-full">
-            {item.image ? (
+            {item.image_url ? (
                 <img
-                    src={item.image}
-                    alt={item.name}
+                    src={item.image_url}
+                    alt={item.item_name}
                     className="w-full h-full object-cover"
                 />
             ) : (

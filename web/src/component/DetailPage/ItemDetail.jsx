@@ -1,11 +1,11 @@
 import React from 'react'
 import { formatPrice } from '../../utlis/formatPrice'
 
-function ItemDetail({ item, basePrice }) {
+function ItemDetail({ item }) {
     return (
         <div className="flex justify-between items-start mb-6 gap-4">
             <div className="min-w-0">
-                <h1 className="text-2xl font-bold mb-1">{item.name}</h1>
+                <h1 className="text-2xl font-bold mb-1">{item.item_name}</h1>
                 <p className="text-sm text-gray-500 leading-snug">
                     {item.description || "Deliciously crafted for you."}
                 </p>

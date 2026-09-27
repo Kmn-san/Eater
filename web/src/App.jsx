@@ -21,6 +21,7 @@ function App() {
           path="/menu/:restaurantCode/:itemId"
           element={<DetailPage />}
         />
+
       </Routes>
     </BrowserRouter>
   )

@@ -1,13 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-    ArrowLeft,
-    Share2,
-    Heart,
-    Minus,
-    Plus,
-    UtensilsCrossed,
-} from "lucide-react";
 import useItemDetail from "../hooks/useItemDetail";
 import LoadingState from "../component/LoadingState";
 import ImageHeader from "../component/DetailPage/ImageHeader";
@@ -16,67 +8,80 @@ import ItemOptions from "../component/DetailPage/ItemOptions";
 import ItemQuantity from "../component/DetailPage/ItemQuantity";
 import ItemNote from "../component/DetailPage/ItemNote";
 import BottomCartBar from "../component/DetailPage/BottomCartBar";
-
-// --- Mock Item Data ---
-const MOCK_ITEM = {
-    id: "38640a82-a027-4e77-9a5f-faaa0b861c08",
-    name: "Milk Tea",
-    description: "Classic sweet milk tea with pearls",
-    price_cents: 550,
-    image:
-        "https://images.unsplash.com/photo-1558857563-b371033873b8?auto=format&fit=crop&q=80&w=600&h=500",
-    is_available: true,
-};
-
-const SUGAR_LEVELS = ["0%", "25%", "50%", "75%", "100%"];
-const ICE_LEVELS = ["None", "Less", "Normal"];
-const TEMPERATURES = ["Cold", "Hot"];
+import ErrorState from "../component/ErrorState";
+import { useCart } from "../context/CartContext";
 
 export default function DetailPage() {
     const { restaurantCode, itemId } = useParams();
-
-    const { data: items, isLoading } = useItemDetail(restaurantCode, itemId)
-    console.log(items);
-
-    const navigate = useNavigate();
-
-    // --- Mock item (replace with location.state?.item when wired to MenuPage) ---
-    const item = MOCK_ITEM;
-
+    const [selectedOptions, setSelectedOptions] = useState({})
+    const { data: item, isLoading, isError } = useItemDetail(restaurantCode, itemId)
+    const { addToCart } = useCart();
     // --- Option State ---
-    const [sugarLevel, setSugarLevel] = useState("50%");
-    const [iceLevel, setIceLevel] = useState("Normal");
-    const [temperature, setTemperature] = useState("Cold");
     const [quantity, setQuantity] = useState(1);
     const [specialNote, setSpecialNote] = useState("");
+    const navigate = useNavigate();
+
+    if (isLoading) {
+        return <LoadingState />
+    }
+    if (isError) {
+        return <ErrorState />
+    }
 
     // --- Price Calculation ---
     const basePrice = item.price_cents;
-    const temperatureUpcharge = temperature === "Hot" ? 100 : 0;
-    const totalPrice = (basePrice + temperatureUpcharge) * quantity;
 
-    const formatPrice = (cents) => `RM ${(cents / 100).toFixed(2)}`;
+    // console.log(item);
+    const selectedOptionPrice = item?.options?.reduce((total, option) => {
+        const selectedValueIds = selectedOptions[option.id] ?? []
+
+        const optionTotal = option.option_value.filter(value =>
+            selectedValueIds.includes(value.id)).reduce((sum, value) =>
+                sum + value.price_delta_cents, 0
+            )
+        return total + optionTotal
+
+    }, 0) ?? 0
+
+    const totalPrice = (basePrice + selectedOptionPrice) * quantity;
+
+    const validateOptions = () => {
+        for (const option of item.options) {
+            const selectedValues = selectedOptions[option.id] ?? []
+
+            if (selectedValues.length < option.min_select) {
+                return {
+                    valid: false,
+                    optionName: option.name
+                }
+            }
+        }
+        return {
+            valid: true
+        }
+    }
 
     const handleAddToCart = () => {
+        const result = validateOptions()
+        if (!result.valid) {
+            alert(`Please select ${result.optionName}`);
+            return;
+        }
         const orderItem = {
-            id: item.id,
-            name: item.name,
-            image: item.image,
+            id: item.item_id,
+            name: item.item_name,
+            image: item.image_url,
             basePrice: item.price_cents,
-            sugarLevel,
-            iceLevel,
-            temperature,
+            selectedOption: selectedOptions,
             quantity,
             specialNote,
             totalPrice,
         };
-        console.log("Added to cart:", orderItem);
-        // TODO: hook into cart context
+
+        addToCart(orderItem)
         navigate(-1);
     };
-    if (isLoading) {
-        return < LoadingState />
-    }
+
 
     return (
         <div className="min-h-screen bg-[#FFFFF0] font-[Inter] text-[#1F1F1F] pb-28">
@@ -88,8 +93,8 @@ export default function DetailPage() {
                 {/* Name + Price */}
                 <ItemDetail item={item} />
 
-                {/* --- Sugar Level --- */}
-                <ItemOptions ICE_LEVELS={ICE_LEVELS} SUGAR_LEVELS={SUGAR_LEVELS} TEMPERATURES={TEMPERATURES} />
+                {/* --- Options --- */}
+                <ItemOptions options={item.options} selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} />
 
                 {/* --- Quantity --- */}
                 <ItemQuantity setQuantity={setQuantity} quantity={quantity} />

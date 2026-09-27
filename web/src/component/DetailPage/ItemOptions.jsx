@@ -1,73 +1,83 @@
-import React from 'react'
-
-function ItemOptions({ SUGAR_LEVELS, ICE_LEVELS, TEMPERATURES, setTemperature, setIceLevel, setSugarLevel, iceLevel, sugarLevel, temperature }) {
+function ItemOptions({ options, selectedOptions, setSelectedOptions }) {
     return (
         <div>
-            <div className="mb-6">
-                <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-semibold text-sm">Sugar Level</h3>
-                    <span className="text-xs text-gray-500">0% - 100%</span>
-                </div>
-                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-                    {SUGAR_LEVELS.map((level) => (
-                        <button
-                            key={level}
-                            onClick={() => setSugarLevel(level)}
-                            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${sugarLevel === level
-                                ? "bg-[#FF5A3C] text-white"
-                                : "bg-white text-gray-600 border border-gray-200"
-                                }`}
-                        >
-                            {level}
-                        </button>
-                    ))}
-                </div>
-            </div>
 
-            {/* --- Ice Level --- */}
-            <div className="mb-6">
-                <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-semibold text-sm">Ice Level</h3>
-                    <span className="text-xs text-gray-500">Temperature</span>
-                </div>
-                <div className="flex gap-2">
-                    {ICE_LEVELS.map((level) => (
-                        <button
-                            key={level}
-                            onClick={() => setIceLevel(level)}
-                            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${iceLevel === level
-                                ? "bg-[#FF5A3C] text-white"
-                                : "bg-white text-gray-600 border border-gray-200"
-                                }`}
-                        >
-                            {level}
-                        </button>
-                    ))}
-                </div>
-            </div>
+            {options.map((option) => {
+                const selectionText =
+                    option.min_select === option.max_select
+                        ? `Choose ${option.min_select}`
+                        : `Choose ${option.min_select} - ${option.max_select}`
+                return (<div className="mb-6" key={option.id}>
 
-            {/* --- Temperature Toggle --- */}
-            <div className="mb-6">
-                <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-semibold text-sm">Temperature</h3>
-                    <span className="text-xs text-gray-500">+RM 1.00 for Hot</span>
-                </div>
-                <div className="flex gap-2">
-                    {TEMPERATURES.map((temp) => (
-                        <button
-                            key={temp}
-                            onClick={() => setTemperature(temp)}
-                            className={`px-6 py-1.5 rounded-full text-sm font-medium transition-colors ${temperature === temp
-                                ? "bg-[#FF5A3C] text-white"
-                                : "bg-white text-gray-600 border border-gray-200"
-                                }`}
-                        >
-                            {temp}
-                        </button>
-                    ))}
-                </div>
-            </div>
-        </div>
+                    <div className="flex justify-between items-center mb-2">
+                        <h3 className="font-semibold text-sm">{option.name}</h3>
+                        <span className="font-semibold text-sm text-gray-500">
+                            {selectionText}
+                        </span>
+
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                        {option.option_value.map((value) => {
+
+                            const selectedValues = selectedOptions[option.id] ?? [];
+
+                            const selected = selectedValues.includes(value.id);
+
+                            const handleSelect = () => {
+                                setSelectedOptions(prev => {
+                                    const current = prev[option.id] ?? []
+
+                                    if (current.includes(value.id)) {
+                                        return {
+                                            ...prev,
+                                            [option.id]: current.filter(id => id !== value.id)
+                                        }
+                                    }
+                                    if (current.length >= option.max_select) {
+                                        return prev;
+                                    }
+
+                                    // Add it
+                                    return {
+                                        ...prev,
+                                        [option.id]: [...current, value.id]
+                                    };
+
+                                })
+                            }
+
+                            return (
+                                <button
+                                    key={value.id}
+                                    onClick={handleSelect}
+                                    className={`px-4 py-1.5 rounded-full text-sm font-medium ${selected
+                                        ? "bg-black text-white"
+                                        : "bg-gray-100"
+                                        }`}
+                                >
+                                    <div className="text-sm">
+                                        {value.name}
+                                    </div>
+
+                                    {value.price_delta_cents > 0 && (
+                                        <div className="text-xs mt-1">
+                                            + RM{value.price_delta_cents / 100}
+                                        </div>
+                                    )}
+                                </button>
+
+                            )
+                        })}
+                    </div>
+                </div >)
+            }
+            )
+            }
+
+
+        </div >
+
     )
 }
 

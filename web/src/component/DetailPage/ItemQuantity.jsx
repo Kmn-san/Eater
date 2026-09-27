@@ -1,10 +1,9 @@
 import { Minus, Plus } from 'lucide-react'
-import React from 'react'
 
 function ItemQuantity({ setQuantity, quantity }) {
     return (
         <div className="mb-6">
-            <h3 className="font-semibold text-sm mb-2">Extra Pearls</h3>
+            <h3 className="font-semibold text-sm mb-2">Quantity</h3>
             <div className="flex items-center gap-3">
                 <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}

@@ -1,14 +1,14 @@
 import { Plus, UtensilsCrossed } from 'lucide-react';
-import React from 'react'
 import { formatPrice } from '../../utlis/formatPrice';
 
 function MenuGrid({ filteredItems, handleOpenDetail, handleAddToCart }) {
+
     return (
         <div className="grid grid-cols-2 gap-3 px-4">
             {filteredItems.map((item) => (
                 <div
                     key={item.id}
-                    onClick={() => handleOpenDetail(item)}
+                    onClick={() => (item.is_available && (handleOpenDetail(item)))}
                     className="relative bg-[#FFFDF8] rounded-xl overflow-hidden border border-[#241A12]/10 flex flex-col cursor-pointer active:scale-[0.98] transition-transform"
                 >
                     {/* Image */}
