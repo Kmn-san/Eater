@@ -31,25 +31,21 @@ export default function DetailPage() {
     // --- Price Calculation ---
     const basePrice = item.price_cents;
 
-    // console.log(item);
-    const selectedOptionPrice = item?.options?.reduce((total, option) => {
-        const selectedValueIds = selectedOptions[option.id] ?? []
+    const selectedOptionPrice = item?.options.reduce((total, option) => {
+        const selectedValueIds = selectedOptions[option.id] ?? [];
 
-        const optionTotal = option.option_value.filter(value =>
-            selectedValueIds.includes(value.id)).reduce((sum, value) =>
-                sum + value.price_delta_cents, 0
-            )
-        return total + optionTotal
+        const optionTotal = option.option_value.filter(value => selectedValueIds.includes(value.id)).reduce((sum, value) => sum + value.price_delta_cents, 0)
+        return optionTotal + total
 
-    }, 0) ?? 0
+    }, 0)
 
     const totalPrice = (basePrice + selectedOptionPrice) * quantity;
 
     const validateOptions = () => {
         for (const option of item.options) {
-            const selectedValues = selectedOptions[option.id] ?? []
+            const selectedValue = selectedOptions[option.id] ?? []
 
-            if (selectedValues.length < option.min_select) {
+            if (selectedValue.length < option.min_select) {
                 return {
                     valid: false,
                     optionName: option.name
@@ -62,11 +58,13 @@ export default function DetailPage() {
     }
 
     const handleAddToCart = () => {
-        const result = validateOptions()
+        const result = validateOptions();
+
         if (!result.valid) {
-            alert(`Please select ${result.optionName}`);
-            return;
+            alert(`Please select ${result.optionName}`)
+            return
         }
+
         const orderItem = {
             id: item.item_id,
             name: item.item_name,
