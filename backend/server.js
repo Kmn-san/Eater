@@ -24,11 +24,11 @@ app.use("/api/orders", orderRoutes)
 app.use("/api/payment", paymentRoutes)
 
 if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "../web/dist")))
+    app.use(express.static(path.join(__dirname, "web/dist")));
 
     app.get("/{*any}", (_, res) => {
-        res.sendFile(path.join(__dirname, "../web", "dist", "index.html"))
-    })
+        res.sendFile(path.join(__dirname, "web", "dist", "index.html"));
+    });
 }
 
 app.listen(PORT, () => {
