@@ -1,7 +1,8 @@
 import { ShoppingBag } from 'lucide-react'
 import { formatPrice } from '../../utlis/formatPrice'
 
-function Summary({ total, subtotal, serviceTax, serviceCharge }) {
+function Summary({ total, subtotal, serviceTax, serviceCharge, handleCheckout }) {
+
     return (
         <aside className="h-fit rounded-xl border border-[#241A12]/10 bg-[#FFFDF8] p-5">
             <h2 className="text-lg font-bold tracking-tight">Order Summary</h2>
@@ -34,6 +35,7 @@ function Summary({ total, subtotal, serviceTax, serviceCharge }) {
 
             <button
                 className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#241A12] py-3 font-semibold text-[#FBF3DF] hover:bg-[#0F6660] transition-colors"
+                onClick={handleCheckout}
             >
                 <ShoppingBag size={18} />
                 Checkout

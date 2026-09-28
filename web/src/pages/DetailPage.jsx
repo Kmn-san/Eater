@@ -71,7 +71,7 @@ export default function DetailPage() {
                 .map((value) => ({
                     optionId: option.id,
                     optionName: option.name,
-                    id: value.id,
+                    optionValueId: value.id,
                     name: value.name,
                     price_delta_cents: value.price_delta_cents ?? 0,
                 }))

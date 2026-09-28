@@ -57,7 +57,7 @@ export default function MenuPage() {
     // --- Derived cart totals ---
     const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-    const cartTotal = cartItems.reduce((sum, item) => sum + item.totalPrice * item.quantity, 0);
+    const cartTotal = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
 
     // --- Navigate to detail page (pass item via state) ---
     const handleOpenDetail = (item) => {

@@ -7,9 +7,9 @@ import EmptyCartPage from "../component/CartPage/EmptyCart";
 export default function CartPage() {
 
     const { cartItems } = useCart()
-
+    
     const subtotal = cartItems.reduce(
-        (total, item) => total + item.totalPrice * item.quantity,
+        (total, item) => total + item.totalPrice,
         0
     );
 
@@ -17,6 +17,21 @@ export default function CartPage() {
     const serviceCharge = subtotal * 0.1;
 
     const total = subtotal + serviceTax + serviceCharge;
+
+    const handleCheckout = () => {
+        const checkoutItem = cartItems.map((item) => ({
+            item_id: item.id,
+            quantity: item.quantity,
+            note: item.specialNote,
+            options: item.selectedOption.map((option) => ({
+                option_id: option.optionId,
+                option_value_id: option.optionValueId
+            }))
+        }))
+        console.log(checkoutItem);
+
+
+    }
 
     if (cartItems.length === 0) {
         return <EmptyCartPage />
@@ -31,7 +46,7 @@ export default function CartPage() {
                 <CartItems cartItems={cartItems} />
 
                 {/* Summary */}
-                <Summary serviceTax={serviceTax} serviceCharge={serviceCharge} subtotal={subtotal} total={total} />
+                <Summary serviceTax={serviceTax} serviceCharge={serviceCharge} subtotal={subtotal} total={total} handleCheckout={handleCheckout} />
             </main>
         </div>
     );
