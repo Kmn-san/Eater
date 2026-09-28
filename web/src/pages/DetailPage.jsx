@@ -65,12 +65,24 @@ export default function DetailPage() {
             return
         }
 
+        const selectedValues = item.options.flatMap((option) =>
+            option.option_value
+                .filter((value) => (selectedOptions[option.id] ?? []).includes(value.id))
+                .map((value) => ({
+                    optionId: option.id,
+                    optionName: option.name,
+                    id: value.id,
+                    name: value.name,
+                    price_delta_cents: value.price_delta_cents ?? 0,
+                }))
+        );
+
         const orderItem = {
             id: item.item_id,
             name: item.item_name,
             image: item.image_url,
             basePrice: item.price_cents,
-            selectedOption: selectedOptions,
+            selectedOption: selectedValues,
             quantity,
             specialNote,
             totalPrice,

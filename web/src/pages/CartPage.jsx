@@ -2,21 +2,25 @@ import Header from "../component/CartPage/Header";
 import CartItems from "../component/CartPage/CartItems";
 import Summary from "../component/CartPage/Summary";
 import { useCart } from "../context/CartContext";
+import EmptyCartPage from "../component/CartPage/EmptyCart";
 
 export default function CartPage() {
 
     const { cartItems } = useCart()
-    console.log(cartItems);
 
     const subtotal = cartItems.reduce(
-        (total, item) => total + item.price * item.quantity,
+        (total, item) => total + item.totalPrice * item.quantity,
         0
     );
 
-    const deliveryFee = 300;
+    const serviceTax = subtotal * 0.06;
+    const serviceCharge = subtotal * 0.1;
 
-    const total = subtotal + deliveryFee;
+    const total = subtotal + serviceTax + serviceCharge;
 
+    if (cartItems.length === 0) {
+        return <EmptyCartPage />
+    }
     return (
         <div className="min-h-screen bg-[#FBF3DF] text-[#241A12] font-[Inter]">
             {/* Header */}
@@ -27,7 +31,7 @@ export default function CartPage() {
                 <CartItems cartItems={cartItems} />
 
                 {/* Summary */}
-                <Summary deliveryFee={deliveryFee} subtotal={subtotal} total={total} />
+                <Summary serviceTax={serviceTax} serviceCharge={serviceCharge} subtotal={subtotal} total={total} />
             </main>
         </div>
     );

@@ -14,9 +14,6 @@ function Header() {
                 </button>
 
                 <div>
-                    <p className="text-[11px] font-medium text-[#0F6660] mb-0.5">
-                        Order review
-                    </p>
                     <h1 className="text-xl font-bold tracking-tight">Your Cart</h1>
                 </div>
             </div>

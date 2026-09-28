@@ -1,7 +1,7 @@
 import { ShoppingBag } from 'lucide-react'
 import { formatPrice } from '../../utlis/formatPrice'
 
-function Summary({ total, subtotal, deliveryFee }) {
+function Summary({ total, subtotal, serviceTax, serviceCharge }) {
     return (
         <aside className="h-fit rounded-xl border border-[#241A12]/10 bg-[#FFFDF8] p-5">
             <h2 className="text-lg font-bold tracking-tight">Order Summary</h2>
@@ -13,8 +13,13 @@ function Summary({ total, subtotal, deliveryFee }) {
                 </div>
 
                 <div className="flex justify-between">
-                    <span className="text-[#241A12]/50">Delivery fee</span>
-                    <span>{formatPrice(deliveryFee)}</span>
+                    <span className="text-[#241A12]/50">Service charge 10%</span>
+                    <span>{formatPrice(serviceCharge)}</span>
+                </div>
+
+                <div className="flex justify-between">
+                    <span className="text-[#241A12]/50">Service tax 6%</span>
+                    <span>{formatPrice(serviceTax)}</span>
                 </div>
 
                 <div className="border-t border-dashed border-[#E3A73B]/60 pt-3">

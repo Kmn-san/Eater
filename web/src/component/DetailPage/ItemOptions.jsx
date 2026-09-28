@@ -1,4 +1,6 @@
 function ItemOptions({ options, selectedOptions, setSelectedOptions }) {
+    console.log(selectedOptions);
+
     return (
         <div>
 

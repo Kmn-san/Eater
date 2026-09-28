@@ -1,42 +1,54 @@
-import { Minus, Plus, Trash2 } from 'lucide-react'
+import { Minus, Plus, Trash2, UtensilsCrossed, StickyNote } from 'lucide-react'
 import { formatPrice } from '../../utlis/formatPrice'
 
 function CartItems({ cartItems }) {
+
     return (
         <section className="space-y-3">
             {cartItems.map((item) => (
                 <div
-                    key={item.id}
+                    key={item.cartId}
                     className="flex gap-4 rounded-xl border border-[#241A12]/10 bg-[#FFFDF8] p-4"
                 >
                     {/* Image */}
-                    <img
-                        src={item.image}
-                        alt={item.name}
-                        className="h-24 w-24 rounded-lg object-cover"
-                    />
+                    {item.image ?
+                        (<img
+                            src={item.image}
+                            alt={item.name}
+                            className="h-24 w-24 rounded-lg object-cover"
+                        />) :
+                        (<div className="h-24 w-24 rounded-lg bg-[#241A12]/5 flex items-center justify-center shrink-0">
+                            <UtensilsCrossed size={32} className="text-[#D6402C]" />
+                        </div>)}
 
                     {/* Information */}
                     <div className="flex min-w-0 flex-1 flex-col">
                         <div className="flex justify-between gap-4">
-                            <div>
+                            <div className="min-w-0">
                                 <h2 className="font-semibold">{item.name}</h2>
 
                                 {item.selectedOption.length > 0 && (
                                     <p className="mt-1 text-sm text-[#241A12]/50">
-                                        {item.options.join(" · ")}
+                                        {item.selectedOption.map((v) => v.name).join(" · ")}
                                     </p>
+                                )}
+                                {/* Note */}
+                                {item.specialNote && (
+                                    <div className="mt-1.5 flex items-start gap-1.5 text-xs text-[#241A12]/60">
+                                        <StickyNote size={14} className="text-[#E3A73B] mt-0.5 shrink-0" />
+                                        <p className="min-w-0 wrap-break-word">{item.specialNote}</p>
+                                    </div>
                                 )}
                             </div>
 
                             <button
-                                className="text-[#241A12]/30 hover:text-[#D6402C]"
+                                className="text-[#241A12]/30 hover:text-[#D6402C] shrink-0"
                             >
                                 <Trash2 size={18} />
                             </button>
                         </div>
 
-                        <div className="mt-auto flex items-end justify-between">
+                        <div className="mt-auto flex items-end justify-between pt-3">
                             {/* Price */}
                             <span className="inline-block -rotate-2 bg-[#D6402C] text-white text-xs font-bold px-2 py-1 rounded-sm">
                                 {formatPrice(item.totalPrice)}
