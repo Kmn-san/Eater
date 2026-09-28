@@ -1,5 +1,4 @@
 function ItemOptions({ options, selectedOptions, setSelectedOptions }) {
-    console.log(selectedOptions);
 
     return (
         <div>
@@ -28,7 +27,7 @@ function ItemOptions({ options, selectedOptions, setSelectedOptions }) {
 
                             const handleSelect = () => {
                                 setSelectedOptions(prev => {
-                                    const current = prev[option.id] ?? []
+                                    const current = prev[option.id] ?? [];
 
                                     if (current.includes(value.id)) {
                                         return {
@@ -36,18 +35,17 @@ function ItemOptions({ options, selectedOptions, setSelectedOptions }) {
                                             [option.id]: current.filter(id => id !== value.id)
                                         }
                                     }
-                                    if (current.length >= option.max_select) {
-                                        return prev;
+                                    if (current.length >= option.min_select) {
+                                        return prev
                                     }
 
-                                    // Add it
                                     return {
                                         ...prev,
                                         [option.id]: [...current, value.id]
-                                    };
-
+                                    }
                                 })
                             }
+
 
                             return (
                                 <button
