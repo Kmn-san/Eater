@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../component/MenuPage/Header";
 import SearchBar from "../component/MenuPage/SearchBar";
-import CategoryTabs from "../component/MenuPage/CAtegoryTabs";
+import CategoryTabs from "../component/MenuPage/CategoryTabs";
 import EmptyState from "../component/MenuPage/EmptyState";
 import BottomCartBar from "../component/MenuPage/BottomCartBar";
 import MenuGrid from "../component/MenuPage/MenuGrid";
