@@ -35,7 +35,7 @@ function ItemOptions({ options, selectedOptions, setSelectedOptions }) {
                                             [option.id]: current.filter(id => id !== value.id)
                                         }
                                     }
-                                    if (current.length >= option.min_select) {
+                                    if (current.length >= option.max_select) {
                                         return prev
                                     }
 
