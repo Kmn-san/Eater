@@ -1,8 +1,9 @@
 import { Minus, Plus, Trash2, UtensilsCrossed, StickyNote } from 'lucide-react'
 import { formatPrice } from '../../utlis/formatPrice'
+import { useCart } from '../../context/CartContext'
 
 function CartItems({ cartItems }) {
-
+    const { deleteFromCart, decreaseQuantity, increaseQuantity } = useCart()
     return (
         <section className="space-y-3">
             {cartItems.map((item) => (
@@ -43,6 +44,7 @@ function CartItems({ cartItems }) {
 
                             <button
                                 className="text-[#241A12]/30 hover:text-[#D6402C] shrink-0"
+                                onClick={() => deleteFromCart(item)}
                             >
                                 <Trash2 size={18} />
                             </button>
@@ -58,6 +60,7 @@ function CartItems({ cartItems }) {
                             <div className="flex items-center rounded-lg border border-[#241A12]/15 overflow-hidden">
                                 <button
                                     className="p-2 text-[#241A12] hover:bg-[#0F6660] hover:text-white transition-colors"
+                                    onClick={() => decreaseQuantity(item)}
                                 >
                                     <Minus size={16} />
                                 </button>
@@ -68,6 +71,7 @@ function CartItems({ cartItems }) {
 
                                 <button
                                     className="p-2 text-[#241A12] hover:bg-[#0F6660] hover:text-white transition-colors"
+                                    onClick={() => increaseQuantity(item)}
                                 >
                                     <Plus size={16} />
                                 </button>

@@ -38,11 +38,50 @@ export function CartProvider({ children }) {
         })
     }
 
+    const deleteFromCart = (item) => {
+        setCartItems(prev => {
+            return prev.filter(cartItem => cartItem.cartId !== item.cartId)
+        })
+    }
+
+    const decreaseQuantity = (item) => {
+        // item is use to tell what to edit
+        if (item.quantity <= 1) {
+            deleteFromCart(item)
+            return
+        }
+        setCartItems(prev => {
+
+            return prev.map((cartItem) => cartItem.cartId === item.cartId ? {
+                ...cartItem,
+                quantity: cartItem.quantity - 1
+            }
+                : cartItem
+            )
+        })
+    }
+
+    const increaseQuantity = (item) => {
+
+        setCartItems(prev => {
+
+            return prev.map((cartItem) => cartItem.cartId === item.cartId ? {
+                ...cartItem,
+                quantity: cartItem.quantity + 1
+            }
+                : cartItem
+            )
+        })
+    }
+
     return (
         <CartContext.Provider
             value={{
                 cartItems,
-                addToCart
+                addToCart,
+                deleteFromCart,
+                decreaseQuantity,
+                increaseQuantity
             }}>
             {children}
         </CartContext.Provider>

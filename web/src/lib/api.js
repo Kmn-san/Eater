@@ -14,3 +14,8 @@ export const fetchDetail = async (restaurantCode, itemId) => {
     const response = await axiosInstance.get(`/menu/${restaurantCode}/${itemId}`)
     return response.data
 }
+
+export const createOrder = async (items) => {
+    const response = await axiosInstance.post(`/order`, items)
+    return response.data
+}
