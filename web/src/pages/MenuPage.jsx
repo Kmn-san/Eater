@@ -14,7 +14,9 @@ import { useCart } from "../context/CartContext";
 export default function MenuPage() {
     const { restaurantCode } = useParams();
     const navigate = useNavigate();
+
     // --- State ---
+    const [search, setSearch] = useState("");
     const [activeCategory, setActiveCategory] = useState("All");
     const { cartItems, addToCart } = useCart();
 
@@ -35,6 +37,8 @@ export default function MenuPage() {
             : menu?.categories
                 ?.filter(category => category.name === activeCategory)
                 .flatMap(category => category.items) ?? []
+
+    const searchedItems = filteredItems.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
 
     // --- Add item to cart ---
     const handleAddToCart = (item) => {
@@ -66,6 +70,7 @@ export default function MenuPage() {
         });
     };
 
+
     if (isLoading) {
         return <LoadingState />
     }
@@ -79,7 +84,7 @@ export default function MenuPage() {
             <Header name={menu.restaurant_name} />
 
             {/* ===== Search Bar ===== */}
-            <SearchBar />
+            <SearchBar search={search} setSearch={setSearch} />
 
             {/* ===== Category Tabs ===== */}
             <CategoryTabs
@@ -89,7 +94,7 @@ export default function MenuPage() {
 
             {/* ===== Menu Grid ===== */}
             <MenuGrid
-                filteredItems={filteredItems}
+                filteredItems={searchedItems}
                 handleOpenDetail={handleOpenDetail}
                 handleAddToCart={handleAddToCart} />
 

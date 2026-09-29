@@ -21,6 +21,38 @@ export const createSession = async (req, res) => {
     }
 }
 
+export const verifyToken = async (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({
+                success: false,
+                message: "Access denied. No token provided"
+            })
+        }
+
+        const token = authHeader.split(' ')[1]
+        if (!token) {
+            return res.status(404).json({ success: false, message: "Token not provided.", code: "NO_TOKEN" })
+        }
+        const existToken = await sessionService.findSession(token)
+
+        if (!existToken) {
+            return res.status(401).json({
+                success: false, code: "INVALID_TOKEN", message: "Invalid token."
+            })
+        }
+
+        res.status(200).json({ success: true })
+    } catch (error) {
+        console.error("Error in verifyToken controller: ", error.message);
+        return res.status(500).json({
+            code: "INTERNAL_SERVER_ERROR",
+            error: error.message
+        });
+    }
+}
+
 export const refreshSession = async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
@@ -52,6 +84,4 @@ export const refreshSession = async (req, res) => {
             error: error.message
         });
     }
-
-
 }

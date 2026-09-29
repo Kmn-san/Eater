@@ -7,7 +7,8 @@ import EmptyCartPage from "../component/CartPage/EmptyCart";
 export default function CartPage() {
 
     const { cartItems } = useCart()
-    
+    const token = localStorage.getItem("token")
+
     const subtotal = cartItems.reduce(
         (total, item) => total + item.totalPrice,
         0

@@ -4,7 +4,7 @@ import MenuPage from "./pages/MenuPage"
 import DetailPage from "./pages/DetailPage"
 import CartPage from "./pages/CartPage"
 function App() {
-
+  const token = localStorage.getItem("token");
   return (
     <BrowserRouter>
       <Routes>
