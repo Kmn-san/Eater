@@ -14,7 +14,7 @@ createRoot(document.getElementById('root')).render(
     <CartProvider>
       <StrictMode>
         <App />
-      </StrictMode>,
+      </StrictMode>
     </CartProvider>
   </QueryClientProvider>
 )

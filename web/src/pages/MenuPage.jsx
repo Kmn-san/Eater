@@ -84,7 +84,7 @@ export default function MenuPage() {
         return <ErrorState message={error.message} />
     }
     return (
-        <div className="min-h-screen bg-[#FBF3DF] font-[Inter] text-[#241A12] pb-28">
+        <div className={`min-h-screen bg-[#FBF3DF] font-[Inter] text-[#241A12] ${cartCount > 0 ? "pb-28" : "pb-6"}`}>
             {/* ===== Header ===== */}
             <Header name={menu.restaurant_name} image={menu.restaurant_image} search={search} setSearch={setSearch} />
 

@@ -6,7 +6,6 @@ import CartPage from "./pages/CartPage"
 import OrderPage from "./pages/OrderPage"
 import PaymentPage from "./pages/PaymentPage"
 function App() {
-  const token = localStorage.getItem("token");
   return (
     <BrowserRouter>
       <Routes>

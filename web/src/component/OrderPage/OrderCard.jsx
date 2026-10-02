@@ -4,7 +4,6 @@ import OrderCardHeader from './OrderCard/OrderCardHeader';
 import OrderItems from './OrderCard/OrderItems';
 import OrderSummary from './OrderCard/OrderSummary';
 
-
 function OrderCard({ order, isExpanded, onToggle }) {
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">
