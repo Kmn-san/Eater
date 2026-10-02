@@ -84,8 +84,7 @@ export default function DetailPage() {
             basePrice: item.price_cents,
             selectedOption: selectedValues,
             quantity,
-            specialNote,
-            totalPrice,
+            specialNote
         };
 
         addToCart(orderItem)

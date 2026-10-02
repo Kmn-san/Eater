@@ -7,9 +7,14 @@ import EmptyCartPage from "../component/CartPage/EmptyCart";
 export default function CartPage() {
 
     const { cartItems } = useCart()
-    
+
     const subtotal = cartItems.reduce(
-        (total, item) => total + item.totalPrice,
+        (total, item) => {
+            const optionPrice = item.selectedOption.reduce((sum, option) =>
+                sum + option.price_delta_cents
+                , 0)
+            return total + (item.basePrice + optionPrice) * item.quantity
+        },
         0
     );
 
@@ -28,7 +33,6 @@ export default function CartPage() {
                 option_value_id: option.optionValueId
             }))
         }))
-        console.log(checkoutItem);
 
 
     }

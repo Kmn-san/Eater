@@ -52,8 +52,7 @@ export default function MenuPage() {
             basePrice: item.price_cents,
             selectedOption: [],
             quantity: 1,
-            specialNote: "",
-            totalPrice: item.price_cents,
+            specialNote: ""
         };
         addToCart(orderItem)
     };
@@ -61,7 +60,13 @@ export default function MenuPage() {
     // --- Derived cart totals ---
     const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-    const cartTotal = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
+    const cartTotal = cartItems.reduce((sum, item) => {
+        const optionPrice = item.selectedOption.reduce((total, option) =>
+            total + option.price_delta_cents
+            , 0)
+
+        return sum + ((item.basePrice + optionPrice) * item.quantity)
+    }, 0);
 
     // --- Navigate to detail page (pass item via state) ---
     const handleOpenDetail = (item) => {
@@ -80,11 +85,11 @@ export default function MenuPage() {
     }
     return (
         <div className="min-h-screen bg-[#FBF3DF] font-[Inter] text-[#241A12] pb-28">
-            {/* ===== Header ===== */}
-            <Header name={menu.restaurant_name} />
-
             {/* ===== Search Bar ===== */}
             <SearchBar search={search} setSearch={setSearch} />
+            
+            {/* ===== Header ===== */}
+            <Header name={menu.restaurant_name} image={menu.restaurant_image} />
 
             {/* ===== Category Tabs ===== */}
             <CategoryTabs

@@ -4,10 +4,14 @@ import { useCart } from '../../context/CartContext'
 
 function CartItems({ cartItems }) {
     const { deleteFromCart, decreaseQuantity, increaseQuantity } = useCart()
+
+
     return (
         <section className="space-y-3">
-            {cartItems.map((item) => (
-                <div
+            {cartItems.map((item) => {
+                const optionValue = item.selectedOption.reduce((sum, value) => sum + value.price_delta_cents, 0)
+                const itemprice = (item.basePrice + optionValue) * item.quantity
+                return (<div
                     key={item.cartId}
                     className="flex gap-4 rounded-xl border border-[#241A12]/10 bg-[#FFFDF8] p-4"
                 >
@@ -53,7 +57,7 @@ function CartItems({ cartItems }) {
                         <div className="mt-auto flex items-end justify-between pt-3">
                             {/* Price */}
                             <span className="inline-block -rotate-2 bg-[#D6402C] text-white text-xs font-bold px-2 py-1 rounded-sm">
-                                {formatPrice(item.totalPrice)}
+                                {formatPrice(itemprice)}
                             </span>
 
                             {/* Quantity */}
@@ -78,8 +82,8 @@ function CartItems({ cartItems }) {
                             </div>
                         </div>
                     </div>
-                </div>
-            ))}
+                </div>)
+            })}
         </section>
     )
 }
