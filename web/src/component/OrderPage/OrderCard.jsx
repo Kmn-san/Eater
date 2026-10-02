@@ -1,5 +1,5 @@
 import BottomBar from './OrderCard/BottomBar';
-import ColumnHeader from './OrderCard/COlumnHeader';
+import ColumnHeader from './OrderCard/ColumnHeader';
 import OrderCardHeader from './OrderCard/OrderCardHeader';
 import OrderItems from './OrderCard/OrderItems';
 import OrderSummary from './OrderCard/OrderSummary';
