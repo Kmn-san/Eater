@@ -7,8 +7,7 @@ import useCreateOrder from "../hooks/useCreateOrder";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function CartPage() {
-    const { restaurantCode } = useParams();
-    const { cartItems } = useCart()
+    const { cartItems, clearCart } = useCart()
     const { mutate, isPending } = useCreateOrder()
     const navigate = useNavigate();
 
@@ -41,6 +40,7 @@ export default function CartPage() {
             { items: checkoutItem },
             {
                 onSuccess: (data) => {
+                    clearCart();
                     navigate(`/payment/${data.result.orderId}/pay`)
                 }
             }

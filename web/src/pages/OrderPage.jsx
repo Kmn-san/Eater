@@ -11,7 +11,7 @@ export default function OrderPage() {
     const navigate = useNavigate();
 
     const { data, isLoading } = useOrder();
-    
+
     const orders = data?.result?.orders ?? []
     const [expandedOrderId, setExpandedOrderId] = useState(null);
 
@@ -36,9 +36,9 @@ export default function OrderPage() {
             <header className="flex items-center gap-3 px-4 py-4 sticky top-0 bg-[#FFFFF0] z-20">
                 <button
                     onClick={() => navigate(-1)}
-                    className="btn btn-circle btn-sm bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+                    className="rounded-full p-2 hover:bg-[#241A12]/5 text-[#241A12]"
                 >
-                    <ArrowLeft size={18} />
+                    <ArrowLeft size={20} />
                 </button>
                 <div>
                     <h1 className="text-lg font-bold leading-tight">Your Orders</h1>
