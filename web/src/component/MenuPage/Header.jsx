@@ -36,7 +36,7 @@ function Header({ name, image, search, setSearch, cartCount = 0 }) {
                             >
                                 <ShoppingCart size={18} />
                                 {cartCount > 0 && (
-                                    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#D6402C] text-white text-[10px] font-bold flex items-center justify-center">
+                                    <span className="absolute -top-1 -right-1 min-w-4.5 h-4.5 px-1 rounded-full bg-[#D6402C] text-white text-[10px] font-bold flex items-center justify-center">
                                         {cartCount}
                                     </span>
                                 )}

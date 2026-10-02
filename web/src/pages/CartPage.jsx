@@ -40,8 +40,8 @@ export default function CartPage() {
         mutate(
             { items: checkoutItem },
             {
-                onSuccess: () => {
-                    navigate(`/restaurant/${restaurantCode}/orders`)
+                onSuccess: (data) => {
+                    navigate(`/payment/${data.result.orderId}/pay`)
                 }
             }
         )

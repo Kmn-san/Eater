@@ -4,6 +4,7 @@ import MenuPage from "./pages/MenuPage"
 import DetailPage from "./pages/DetailPage"
 import CartPage from "./pages/CartPage"
 import OrderPage from "./pages/OrderPage"
+import PaymentPage from "./pages/PaymentPage"
 function App() {
   const token = localStorage.getItem("token");
   return (
@@ -32,6 +33,11 @@ function App() {
         <Route
           path="/restaurant/:restaurantCode/orders"
           element={<OrderPage />}
+        />
+
+        <Route
+          path="/payment/:orderId/pay"
+          element={<PaymentPage />}
         />
 
       </Routes>

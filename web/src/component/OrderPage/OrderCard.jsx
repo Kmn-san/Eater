@@ -24,7 +24,7 @@ function OrderCard({ order, isExpanded, onToggle }) {
                     <OrderSummary order={order} />
 
                     {/* Download Receipt */}
-                    <BottomBar />
+                    <BottomBar order={order} />
                 </div>
             )}
         </div>

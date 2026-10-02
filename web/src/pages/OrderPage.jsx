@@ -11,7 +11,7 @@ export default function OrderPage() {
     const navigate = useNavigate();
 
     const { data, isLoading } = useOrder();
-    // Which order is expanded? (null = all collapsed, id = that order)
+    
     const orders = data?.result?.orders ?? []
     const [expandedOrderId, setExpandedOrderId] = useState(null);
 
