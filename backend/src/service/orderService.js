@@ -303,7 +303,7 @@ export const processOrderCreation = async ({ restaurant_id, session_id, table_id
 
 }
 
-export const fetchOrder = async (
+export const fetchAllOrder = async (
     session_id
 ) => {
     const { rows: dbOrder } = await query(`
@@ -345,6 +345,102 @@ export const fetchOrder = async (
         WHERE session_id = $1
         ORDER BY o.created_at ASC, i.menu_item_id ASC
         `, [session_id])
+
+    const result = {
+        orders: []
+    }
+
+    dbOrder.forEach(row => {
+        let order = result.orders.find(
+            o => o.id === row.order_id
+        )
+
+        if (!order) {
+            order = {
+                id: row.order_id,
+                orderNumber: row.order_number,
+                status: row.status,
+                paymentStatus: row.payment_status,
+                subtotalCents: row.subtotal_cents,
+                serviceTaxCents: row.service_tax_cents,
+                serviceChargeCents: row.service_charge_cents,
+                totalCents: row.total_cents,
+                placedAt: row.created_at,
+                items: []
+            }
+            result.orders.push(order)
+        }
+        let item = order.items.find(
+            i => i.id === row.item_id
+        )
+
+        if (!item) {
+            const subtotalCents = row.quantity * row.unit_price_cents
+
+            item = {
+                id: row.item_id,
+                name: row.item_name,
+                quantity: row.quantity,
+                unitPriceCents: row.unit_price_cents,
+                subtotalCents: subtotalCents,
+                note: row.note,
+                image: row.image_url,
+                options: []
+            }
+            order.items.push(item)
+        }
+        if (row.option_name) {
+            item.options.push({
+                name: row.option_name,
+                value: row.option_value_name,
+                priceDeltaCents: row.price_delta_cents
+            })
+        }
+    }
+    )
+    return result
+}
+
+export const fetchOrder = async ({ sessionId, orderId }) => {
+    const { rows: dbOrder } = await query(`
+        SELECT
+            o.id AS order_id, 
+            o.order_number,
+            o.status, 
+            o.payment_status, 
+            o.subtotal_cents,
+            o.service_tax_cents, 
+            o.service_charge_cents, 
+            o.discount_cents,
+            o.total_cents,
+            o.created_at,
+
+            i.id AS item_id,
+            i.item_name_snapshot AS item_name,
+            i.quantity,
+            i.unit_price_cents,
+            i.note,
+
+            d.image_url,
+
+            v.option_name_snapshot AS option_name,
+            v.option_value_name_snapshot AS option_value_name,
+            v.price_delta_cents
+
+        FROM orders o
+        
+        JOIN order_item i
+            ON o.id = i.order_id
+
+        JOIN menu_items d
+            ON d.id = i.menu_item_id
+
+        LEFT JOIN order_item_options v
+            ON i.id = v.order_item_id
+
+        WHERE session_id = $1 AND order_id = $2
+        ORDER BY o.created_at ASC, i.menu_item_id ASC
+        `, [sessionId, orderId])
 
     const result = {
         orders: []

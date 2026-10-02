@@ -1,16 +1,17 @@
 import * as paymentService from "../service/paymentService.js"
 
-export const payment = async (req, res) => {
+export const createCheckoutSession = async (req, res) => {
     try {
         const { orderId } = req.params;
 
-        const result = await paymentService.processPayment(orderId)
+        const result = await paymentService.processPayment(orderId, req.customer.sessionId)
 
         return res.status(200).json({
             success: true,
             code: "PAYMENT_SUCCESSFULLY",
             data: result
         })
+
     } catch (error) {
         if (error.code) {
             return res.status(400).json({
@@ -18,7 +19,7 @@ export const payment = async (req, res) => {
                 error: error.message
             });
         }
-        console.error("Error in processPayment controller: ", error.message);
+        console.error("Error in createCheckoutSession controller: ", error.message);
         return res.status(500).json({
             code: "INTERNAL_SERVER_ERROR",
             error: error.message

@@ -34,13 +34,32 @@ export const createOrder = async (req, res) => {
 export const fetchLatestOrder = async (req, res) => {
     try {
         const { sessionId } = req.customer;
-        const result = await orderService.fetchOrder(sessionId)
+        const result = await orderService.fetchAllOrder(sessionId)
         if (!result) {
             res.status(404).json({ success: true, message: "No order yet." })
         }
         res.status(200).json({ success: true, result })
     } catch (error) {
         console.error("Error in fetchLatestOrder controller: ", error.message);
+        return res.status(500).json({
+            code: "INTERNAL_SERVER_ERROR",
+            error: error.message
+        });
+    }
+}
+
+export const fetchAOrder = async (req, res) => {
+    try {
+        const { sessionId } = req.customer;
+        const { orderId } = req.params;
+        
+        const result = await orderService.fetchOrder({ sessionId, orderId })
+        if (!result) {
+            res.status(404).json({ success: true, message: "No order yet." })
+        }
+        res.status(200).json({ success: true, result })
+    } catch (error) {
+        console.error("Error in fetchOrder controller: ", error.message);
         return res.status(500).json({
             code: "INTERNAL_SERVER_ERROR",
             error: error.message

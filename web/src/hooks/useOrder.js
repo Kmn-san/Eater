@@ -3,7 +3,7 @@ import { fetchOrder } from "../lib/api"
 
 const useOrder = () => {
     return useQuery({
-        queryKey: ["order"],
+        queryKey: ["orders"],
         queryFn: () => fetchOrder()
     })
 }

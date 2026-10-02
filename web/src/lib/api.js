@@ -20,7 +20,21 @@ export const createOrder = async (items) => {
     return response.data
 }
 
+export const createCheckoutSession = async (orderId) => {
+    const response = await axiosInstance.post(
+        "/payments/checkout",
+        { orderId }
+    );
+
+    return response.data;
+};
+
 export const fetchOrder = async () => {
     const response = await axiosInstance.get(`/orders/latest`)
+    return response.data
+}
+
+export const fetchOrderById = async (orderId) => {
+    const response = await axiosInstance.get(`/orders/${orderId}`)
     return response.data
 }
