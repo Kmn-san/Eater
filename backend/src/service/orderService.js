@@ -317,6 +317,7 @@ export const fetchOrder = async (
             o.service_charge_cents, 
             o.discount_cents,
             o.total_cents,
+            o.created_at,
 
             i.id AS item_id,
             i.item_name_snapshot AS item_name,
@@ -324,14 +325,19 @@ export const fetchOrder = async (
             i.unit_price_cents,
             i.note,
 
+            d.image_url,
+
             v.option_name_snapshot AS option_name,
             v.option_value_name_snapshot AS option_value_name,
             v.price_delta_cents
 
         FROM orders o
-
+        
         JOIN order_item i
             ON o.id = i.order_id
+
+        JOIN menu_items d
+            ON d.id = i.menu_item_id
 
         LEFT JOIN order_item_options v
             ON i.id = v.order_item_id
@@ -359,6 +365,7 @@ export const fetchOrder = async (
                 serviceTaxCents: row.service_tax_cents,
                 serviceChargeCents: row.service_charge_cents,
                 totalCents: row.total_cents,
+                placedAt: row.created_at,
                 items: []
             }
             result.orders.push(order)
@@ -377,6 +384,7 @@ export const fetchOrder = async (
                 unitPriceCents: row.unit_price_cents,
                 subtotalCents: subtotalCents,
                 note: row.note,
+                image: row.image_url,
                 options: []
             }
             order.items.push(item)

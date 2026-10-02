@@ -85,11 +85,8 @@ export default function MenuPage() {
     }
     return (
         <div className="min-h-screen bg-[#FBF3DF] font-[Inter] text-[#241A12] pb-28">
-            {/* ===== Search Bar ===== */}
-            <SearchBar search={search} setSearch={setSearch} />
-            
             {/* ===== Header ===== */}
-            <Header name={menu.restaurant_name} image={menu.restaurant_image} />
+            <Header name={menu.restaurant_name} image={menu.restaurant_image} search={search} setSearch={setSearch} />
 
             {/* ===== Category Tabs ===== */}
             <CategoryTabs

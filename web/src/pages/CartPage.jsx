@@ -3,10 +3,14 @@ import CartItems from "../component/CartPage/CartItems";
 import Summary from "../component/CartPage/Summary";
 import { useCart } from "../context/CartContext";
 import EmptyCartPage from "../component/CartPage/EmptyCart";
+import useCreateOrder from "../hooks/useCreateOrder";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function CartPage() {
-
+    const { restaurantCode } = useParams();
     const { cartItems } = useCart()
+    const { mutate, isPending } = useCreateOrder()
+    const navigate = useNavigate();
 
     const subtotal = cartItems.reduce(
         (total, item) => {
@@ -33,8 +37,14 @@ export default function CartPage() {
                 option_value_id: option.optionValueId
             }))
         }))
-
-
+        mutate(
+            { items: checkoutItem },
+            {
+                onSuccess: () => {
+                    navigate(`/restaurant/${restaurantCode}/orders`)
+                }
+            }
+        )
     }
 
     if (cartItems.length === 0) {
@@ -50,7 +60,7 @@ export default function CartPage() {
                 <CartItems cartItems={cartItems} />
 
                 {/* Summary */}
-                <Summary serviceTax={serviceTax} serviceCharge={serviceCharge} subtotal={subtotal} total={total} handleCheckout={handleCheckout} />
+                <Summary serviceTax={serviceTax} serviceCharge={serviceCharge} subtotal={subtotal} total={total} handleCheckout={handleCheckout} isPending={isPending} />
             </main>
         </div>
     );
