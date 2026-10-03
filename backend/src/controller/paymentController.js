@@ -52,8 +52,8 @@ export const handleStripeWebhook = async (req, res) => {
         try {
             const { orderId, sessionId } = paymentIntent.metadata
             const paymentIntentId = paymentIntent.id
-            console.log(paymentIntent);
-            
+            console.log(paymentIntentId);
+
             await paymentService.updatePayment(paymentIntentId, sessionId)
 
             await orderService.updateStatus(orderId)
