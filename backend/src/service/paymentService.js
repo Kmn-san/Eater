@@ -76,19 +76,16 @@ export const processPayment = async (orderData, sessionId) => {
 
 }
 
-export const updatePayment = async (paymentIntentId, sessionId) => {
-    console.log(paymentIntentId);
-    console.log(sessionId);
-    
-    
+export const updatePayment = async (paymentIntentId, orderId) => {
+
     const { rows } = await query(`
         UPDATE payment
         SET 
             provider_payment_id = $1,
             status = 'success',
             paid_at = NOW()
-        WHERE provider_checkout_id = $2
+        WHERE order_id = $2
         RETURNING *
-        `, [paymentIntentId, sessionId])
+        `, [paymentIntentId, orderId])
     return rows[0]
 }

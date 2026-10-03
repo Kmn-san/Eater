@@ -50,11 +50,10 @@ export const handleStripeWebhook = async (req, res) => {
         const paymentIntent = event.data.object;
 
         try {
-            const { orderId, sessionId } = paymentIntent.metadata
+            const { orderId } = paymentIntent.metadata
             const paymentIntentId = paymentIntent.id
-            console.log(paymentIntentId);
 
-            await paymentService.updatePayment(paymentIntentId, sessionId)
+            await paymentService.updatePayment(paymentIntentId, orderId)
 
             await orderService.updateStatus(orderId)
 
