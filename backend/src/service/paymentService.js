@@ -1,5 +1,5 @@
 import { ENV } from "../config/env.js";
-import { pool } from "../utlis/db.js"
+import { pool, query } from "../utlis/db.js"
 import { stripe } from "../utlis/stripe.js";
 
 export const processPayment = async (orderData, sessionId) => {
@@ -77,9 +77,7 @@ export const processPayment = async (orderData, sessionId) => {
 }
 
 export const updatePayment = async (paymentIntentId, sessionId) => {
-    console.log(paymentIntentId);
-    
-    const { rows } = await client.query(`
+    const { rows } = await query(`
         UPDATE payment
         SET 
             provider_payment_id = $1,

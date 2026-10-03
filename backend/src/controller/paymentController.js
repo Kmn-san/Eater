@@ -53,10 +53,8 @@ export const handleStripeWebhook = async (req, res) => {
             const { orderId, sessionId } = paymentIntent.metadata
 
             await paymentService.updatePayment(paymentIntent.id, sessionId)
-            console.log("Success 1");
 
             await orderService.updateStatus(orderId)
-            console.log("Success 2");
 
         } catch (error) {
             console.error("Error creating order from webhook:", error);
