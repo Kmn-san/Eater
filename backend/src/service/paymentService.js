@@ -77,6 +77,10 @@ export const processPayment = async (orderData, sessionId) => {
 }
 
 export const updatePayment = async (paymentIntentId, sessionId) => {
+    console.log(paymentIntentId);
+    console.log(sessionId);
+    
+    
     const { rows } = await query(`
         UPDATE payment
         SET 
