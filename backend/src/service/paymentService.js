@@ -76,6 +76,15 @@ export const processPayment = async (orderData, sessionId) => {
 
 }
 
-export const updatePayment = async () => {
-
+export const updatePayment = async (paymentIntentId, sessionId) => {
+    const { rows } = await client.query(`
+        UPDATE payment
+        SET 
+            provider_payment_id = $1,
+            status = 'success',
+            paid_at = NOW()
+        WHERE provider_checkout_id = $2
+        RETURNING *
+        `, [paymentIntentId, sessionId])
+    return rows[0]
 }

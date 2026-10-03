@@ -503,7 +503,11 @@ export const fetchOrder = async ({ sessionId, orderId }) => {
 }
 
 export const updateStatus = async (orderId) => {
- const rows = await query(`
-    UPDATE 
-    `)
+    const { rows } = await query(`
+    UPDATE orders
+    SET payment_status = 'success'
+    WHERE id = $1
+    RETURNING *
+    `, [orderId])
+    return rows[0]
 }

@@ -48,14 +48,13 @@ export const handleStripeWebhook = async (req, res) => {
 
     if (event.type === "payment_intent.succeeded") {
         const paymentIntent = event.data.object;
-        console.log("PaymentIntent", paymentIntent.id);
-        console.log("checkoutSessionId", paymentIntent);
 
         try {
-            // const updatePayment = await paymentService.updatePayment(paymentIntent.id, sessionId)
+            const { orderId, sessionId } = paymentIntent.metadata
 
-            // const updateOrder = await orderService.updateStatus(orderId)
+            await paymentService.updatePayment(paymentIntent.id, sessionId)
 
+            await orderService.updateStatus(orderId)
 
         } catch (error) {
             console.error("Error creating order from webhook:", error);
