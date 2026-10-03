@@ -501,3 +501,9 @@ export const fetchOrder = async ({ sessionId, orderId }) => {
     )
     return result.orders[0]
 }
+
+export const updateStatus = async (orderId) => {
+ const rows = await query(`
+    UPDATE 
+    `)
+}

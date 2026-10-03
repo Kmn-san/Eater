@@ -10,7 +10,7 @@ export const createCheckoutSession = async (req, res) => {
 
         const orderData = await orderService.fetchOrder({ sessionId, orderId })
         if (!orderData) {
-            res.status(404).json({ success: false, message: "Order not found." })
+            return res.status(404).json({ success: false, message: "Order not found." })
         }
 
         const result = await paymentService.processPayment(orderData, sessionId)
@@ -36,7 +36,6 @@ export const createCheckoutSession = async (req, res) => {
 }
 
 export const handleStripeWebhook = async (req, res) => {
-    console.log("🔥 Stripe webhook received");
     const sig = req.headers["stripe-signature"];
     let event;
 
@@ -47,8 +46,23 @@ export const handleStripeWebhook = async (req, res) => {
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    console.log("Stripe event:", event.type);
-    console.log("Event ID:", event.id);
+    if (event.type === "payment_intent.succeeded") {
+        const paymentIntent = event.data.object;
+
+        try {
+            const { sessionId, orderId } = paymentIntent.metadata;
+            console.log("PaymentIntent", paymentIntent.id);
+            console.log("checkoutSessionId", sessionId);
+
+            // const updatePayment = await paymentService.updatePayment(paymentIntent.id, sessionId)
+
+            // const updateOrder = await orderService.updateStatus(orderId)
+
+
+        } catch (error) {
+            console.error("Error creating order from webhook:", error);
+        }
+    }
 
     res.json({ received: true });
 

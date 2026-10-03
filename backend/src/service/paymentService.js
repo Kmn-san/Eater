@@ -46,6 +46,13 @@ export const processPayment = async (orderData, sessionId) => {
             },
         });
 
+        await pool.query(`
+            INSERT INTO payment
+                (order_id,provider,amount_cents,status,provider_checkout_id)
+                VALUES($1,$2,$3,$4,$5)
+                RETURNING *
+            `, [order.id, "stripe", order.totalCents, "pending", checkoutSession.id])
+
 
         await client.query('COMMIT');
 
@@ -63,4 +70,8 @@ export const processPayment = async (orderData, sessionId) => {
         client.release();
     }
 
+}
+
+export const updatePayment = async () => {
+    
 }
