@@ -20,7 +20,6 @@ export const processPayment = async (orderData, sessionId) => {
 
         const checkoutSession = await stripe.checkout.sessions.create({
             mode: "payment",
-
             line_items: [
                 {
                     price_data: {
@@ -39,10 +38,15 @@ export const processPayment = async (orderData, sessionId) => {
 
             cancel_url:
                 `${ENV.FRONTEND_URL}/payment/cancel`,
-
             metadata: {
                 sessionId: sessionId,
                 orderId: order.id,
+            },
+            payment_intent_data: {
+                metadata: {
+                    sessionId: sessionId,
+                    orderId: order.id,
+                },
             },
         });
 
@@ -73,5 +77,5 @@ export const processPayment = async (orderData, sessionId) => {
 }
 
 export const updatePayment = async () => {
-    
+
 }
