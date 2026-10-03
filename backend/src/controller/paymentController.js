@@ -45,24 +45,26 @@ export const handleStripeWebhook = async (req, res) => {
         console.error("Webhook signature verification failed:", err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
-
-    if (event.type === "payment_intent.succeeded") {
-        const paymentIntent = event.data.object;
-
-        try {
-            const { sessionId, orderId } = paymentIntent.metadata;
-            console.log("PaymentIntent", paymentIntent.id);
-            console.log("checkoutSessionId", sessionId);
-
-            // const updatePayment = await paymentService.updatePayment(paymentIntent.id, sessionId)
-
-            // const updateOrder = await orderService.updateStatus(orderId)
+    console.log(event.type);
 
 
-        } catch (error) {
-            console.error("Error creating order from webhook:", error);
-        }
-    }
+    // if (event.type === "payment_intent.succeeded") {
+    //     const paymentIntent = event.data.object;
+
+    //     try {
+    //         const { sessionId, orderId } = paymentIntent.metadata;
+    //         console.log("PaymentIntent", paymentIntent.id);
+    //         console.log("checkoutSessionId", sessionId);
+
+    //         // const updatePayment = await paymentService.updatePayment(paymentIntent.id, sessionId)
+
+    //         // const updateOrder = await orderService.updateStatus(orderId)
+
+
+    //     } catch (error) {
+    //         console.error("Error creating order from webhook:", error);
+    //     }
+    // }
 
     res.json({ received: true });
 
