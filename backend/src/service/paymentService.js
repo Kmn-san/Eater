@@ -1,63 +1,56 @@
+import { ENV } from "../config/env.js";
 import { pool } from "../utlis/db.js"
 import { stripe } from "../utlis/stripe.js";
 
-export const processPayment = async (orderId, sessionId) => {
+export const processPayment = async (orderData, sessionId) => {
 
     const client = await pool.connect();
 
     try {
         await client.query("BEGIN");
 
-        const { rows: existOrder } = await client.query(`
-        SELECT 
-            id, total_cents, payment_status,order_number
-        FROM orders
-        WHERE id = $1 AND session_id = $2
-        `, [orderId, sessionId])
-        if (existOrder.length === 0) {
-            throw {
-                code: 'ORDER_NOT_FOUND',
-                message: 'Order not found.'
-            }
-        }
+        const order = orderData
 
-        const order = existOrder[0]
-
-        if (order.payment_status !== 'pending') {
+        if (order.paymentStatus !== 'pending') {
             throw {
                 code: "ORDER_CANNOT_BE_PAID",
-                message: `Order cannot be paid. Current payment status: ${order.payment_status}`
+                message: `Order cannot be paid. Current payment status: ${order.paymentStatus}`
             };
         }
 
-        const createSession = await stripe.checkout.sessions.create({
-            mode: 'payment',
+        const checkoutSession = await stripe.checkout.sessions.create({
+            mode: "payment",
 
             line_items: [
                 {
                     price_data: {
                         currency: "myr",
                         product_data: {
-                            name: `Eater Order ${order.order_number}`
+                            name: `Order #${order.orderNumber}`,
                         },
-                        unit_amount: order.total_cents
+                        unit_amount: order.totalCents,
                     },
-                    quantity: 1
-                }
+                    quantity: 1,
+                },
             ],
-            success_url: `${process.env.FRONTEND_URL}/payment/success`,
-            cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
+
+            success_url:
+                `${ENV.FRONTEND_URL}/payment/success?order_id=${order.id}&restaurant_code=${order.restaurantCode}&session_id={CHECKOUT_SESSION_ID}`,
+
+            cancel_url:
+                `${ENV.FRONTEND_URL}/payment/cancel`,
 
             metadata: {
-                order_id: order.id,
+                sessionId: sessionId,
+                orderId: order.id,
             },
-        })
+        });
 
 
         await client.query('COMMIT');
 
         return {
-            checkoutUrl: createSession.url,
+            checkoutUrl: checkoutSession.url
         };
     } catch (error) {
         try {

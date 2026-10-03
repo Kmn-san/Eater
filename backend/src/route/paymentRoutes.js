@@ -4,6 +4,6 @@ import { protectRoute } from "../middleware/authMiddleware.js";
 
 const router = Router();
 
-router.post("/create-checkout-session", protectRoute, createCheckoutSession)
+router.post("/create-payment-intent/:orderId", protectRoute, createCheckoutSession)
 
 export default router;

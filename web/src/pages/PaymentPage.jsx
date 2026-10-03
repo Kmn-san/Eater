@@ -1,10 +1,12 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, CreditCard, ShieldCheck } from 'lucide-react'
+
 import { formatPrice } from '../utlis/formatPrice'
 import LoadingState from '../component/LoadingState'
 import ErrorState from '../component/ErrorState'
-import useCreateCheckoutSession from '../hooks/useCreateCheckoutSession'
-import useOrderDetail from '../hooks/useOrderDetail'
+
+import { useOrderDetail } from '../hooks/useOrder'
+import useCreatePaymentIntent from '../hooks/useCreatePaymentIntent'
 
 
 export default function PaymentPage() {
@@ -12,23 +14,22 @@ export default function PaymentPage() {
     const navigate = useNavigate()
 
     const { data, isLoading, error } = useOrderDetail(orderId)
-    const order = data?.result?.orders[0]
+    const order = data?.result
 
-    const { mutate, isPending } = useCreateCheckoutSession()
-    
+    const { mutate, isPending } = useCreatePaymentIntent()
+
     const handlePay = () => {
         mutate(orderId, {
             onSuccess: (data) => {
-                window.location.href = data.result.checkoutUrl
+                window.location.href = data.result.checkoutUrl;
             },
-        })
-    }
-    
+        });
+    };
+
     if (isLoading) {
         return <LoadingState />
     }
-    
-    console.log(order);
+
 
     if (error || !order) {
         return <ErrorState message={error?.message ?? "Order not found"} />
@@ -54,7 +55,7 @@ export default function PaymentPage() {
                         <span className="text-sm text-gray-500">Order</span>
                         <span className="text-sm font-bold">#{order.orderNumber}</span>
                     </div>
-                    
+
                 </div>
 
                 {/* ===== Item list ===== */}

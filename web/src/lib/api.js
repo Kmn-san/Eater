@@ -20,10 +20,10 @@ export const createOrder = async (items) => {
     return response.data
 }
 
-export const createCheckoutSession = async (orderId) => {
+export const createPaymentIntent = async (orderId) => {
     const response = await axiosInstance.post(
-        "/payments/checkout",
-        { orderId }
+        `/payment/create-payment-intent/${orderId}`,
+
     );
 
     return response.data;

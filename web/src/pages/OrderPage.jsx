@@ -2,8 +2,8 @@ import { ArrowLeft, Receipt } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import OrderCard from "../component/OrderPage/OrderCard";
-import useOrder from "../hooks/useOrder";
 import LoadingState from "../component/LoadingState";
+import { useOrder } from "../hooks/useOrder";
 
 
 export default function OrderPage() {
@@ -35,7 +35,7 @@ export default function OrderPage() {
             {/* ===== Header ===== */}
             <header className="flex items-center gap-3 px-4 py-4 sticky top-0 bg-[#FFFFF0] z-20">
                 <button
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate(`/restaurant/${restaurantCode}/menu`)}
                     className="rounded-full p-2 hover:bg-[#241A12]/5 text-[#241A12]"
                 >
                     <ArrowLeft size={20} />

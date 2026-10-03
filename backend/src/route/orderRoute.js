@@ -5,7 +5,7 @@ import { protectRoute } from "../middleware/authMiddleware.js";
 const router = Router();
 
 router.post("/", protectRoute, createOrder)
-router.get("/:orderId", protectRoute, fetchAOrder)
 router.get("/latest", protectRoute, fetchLatestOrder)
+router.get("/:orderId", protectRoute, fetchAOrder)
 
 export default router;

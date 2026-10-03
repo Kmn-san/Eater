@@ -1,11 +1,17 @@
 import { useQuery } from "@tanstack/react-query"
-import { fetchOrder } from "../lib/api"
+import { fetchOrder, fetchOrderById } from "../lib/api"
 
-const useOrder = () => {
+export const useOrder = () => {
     return useQuery({
         queryKey: ["orders"],
         queryFn: () => fetchOrder()
     })
 }
 
-export default useOrder;
+export const useOrderDetail = (orderId) => {
+    return useQuery({
+        queryKey: ["order", orderId],
+        queryFn: () => fetchOrderById(orderId),
+        enabled: !!orderId,
+    })
+}

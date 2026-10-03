@@ -5,6 +5,9 @@ import DetailPage from "./pages/DetailPage"
 import CartPage from "./pages/CartPage"
 import OrderPage from "./pages/OrderPage"
 import PaymentPage from "./pages/PaymentPage"
+import PaymentCancelPage from "./pages/PaymentCancelPage"
+import PaymentSuccessPage from "./pages/PaymentSuccessPage"
+
 function App() {
   return (
     <BrowserRouter>
@@ -37,6 +40,16 @@ function App() {
         <Route
           path="/payment/:orderId/pay"
           element={<PaymentPage />}
+        />
+
+        <Route
+          path="/payment/success"
+          element={<PaymentSuccessPage />}
+        />
+
+        <Route
+          path="/payment/cancel"
+          element={<PaymentCancelPage />}
         />
 
       </Routes>

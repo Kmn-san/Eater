@@ -7,10 +7,16 @@ import menuRoutes from "./src/route/menuRoutes.js"
 import sessionRoutes from "./src/route/sessionRoutes.js"
 import orderRoutes from "./src/route/orderRoute.js"
 import paymentRoutes from "./src/route/paymentRoutes.js"
+import { handleStripeWebhook } from "./src/controller/paymentController.js";
 
 const app = express();
 const PORT = ENV.PORT;
 const __dirname = path.resolve()
+
+app.post("/api/payment/webhook",
+    express.raw({type:"application/json"}),
+    handleStripeWebhook
+)
 
 app.use(cors({
     origin: "http://localhost:5173",

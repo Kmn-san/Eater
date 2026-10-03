@@ -425,7 +425,9 @@ export const fetchOrder = async ({ sessionId, orderId }) => {
 
             v.option_name_snapshot AS option_name,
             v.option_value_name_snapshot AS option_value_name,
-            v.price_delta_cents
+            v.price_delta_cents,
+
+            r.restaurant_code
 
         FROM orders o
         
@@ -434,6 +436,9 @@ export const fetchOrder = async ({ sessionId, orderId }) => {
 
         JOIN menu_items d
             ON d.id = i.menu_item_id
+
+        JOIN restaurant r
+            ON r.id = o.restaurant_id
 
         LEFT JOIN order_item_options v
             ON i.id = v.order_item_id
@@ -454,6 +459,7 @@ export const fetchOrder = async ({ sessionId, orderId }) => {
         if (!order) {
             order = {
                 id: row.order_id,
+                restaurantCode: row.restaurant_code,
                 orderNumber: row.order_number,
                 status: row.status,
                 paymentStatus: row.payment_status,
@@ -480,7 +486,6 @@ export const fetchOrder = async ({ sessionId, orderId }) => {
                 unitPriceCents: row.unit_price_cents,
                 subtotalCents: subtotalCents,
                 note: row.note,
-                image: row.image_url,
                 options: []
             }
             order.items.push(item)
@@ -494,5 +499,5 @@ export const fetchOrder = async ({ sessionId, orderId }) => {
         }
     }
     )
-    return result
+    return result.orders[0]
 }
