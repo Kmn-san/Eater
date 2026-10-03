@@ -49,7 +49,7 @@ export const handleStripeWebhook = async (req, res) => {
     if (event.type === "payment_intent.succeeded") {
         const paymentIntent = event.data.object;
         console.log("PaymentIntent", paymentIntent.id);
-        console.log("checkoutSessionId", paymentIntent.metadata.sessionId);
+        console.log("checkoutSessionId", paymentIntent.metadata);
 
         try {
             // const updatePayment = await paymentService.updatePayment(paymentIntent.id, sessionId)
