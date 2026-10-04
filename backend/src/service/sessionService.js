@@ -7,13 +7,14 @@ export const createGuestSession = async (table_id) => {
         .createHash("sha256")
         .update(token)
         .digest("hex");
+    const expired = new Date(Date.now() + 2 * 60 * 60 * 1000)
     const { rows } = await query(`
         INSERT INTO guest_sessions
-        (token_hash,table_id)
+        (token_hash,table_id,expired_at)
         VALUES
-        ($1,$2)
+        ($1,$2,$3)
         RETURNING *
-        `, [tokenHash, table_id])
+        `, [tokenHash, table_id, expired])
     return {
         session: rows[0],
         token
