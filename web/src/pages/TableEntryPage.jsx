@@ -16,16 +16,22 @@ export default function TableEntryPage() {
         let timer;
         const startSession = async () => {
             try {
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("qrEntryPath");
                 const res = await fetchRestaurant({ restaurantCode, tableCode });
 
                 setRestaurantName(res.restaurantName);
-                localStorage.setItem("token", res.token);
+                sessionStorage.setItem("token", res.token);
+                sessionStorage.setItem(
+                    "qrEntryPath",
+                    window.location.pathname
+                )
                 timer = setTimeout(() => {
                     navigate(`/restaurant/${restaurantCode}/menu`);
                 }, 3000);
             } catch (error) {
                 console.error(error);
-                setError("Unable to start your session.");
+                setError("This QR code is invalid or no longer available. Scan another QR code");
             } finally {
                 setLoading(false);
             }
@@ -38,12 +44,12 @@ export default function TableEntryPage() {
     }, [restaurantCode, tableCode, navigate]);
 
     if (loading) {
-        <LoadingState />
+        return <LoadingState />
     }
 
     if (error) {
         return (
-            <ErrorState />
+            <ErrorState message={error} />
         );
     }
 

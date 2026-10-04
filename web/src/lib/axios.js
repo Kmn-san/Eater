@@ -1,4 +1,6 @@
 import axios from "axios"
+import { useNavigate } from "react-router-dom";
+
 const BASE_URI = import.meta.env.MODE === "development" ? "http://localhost:3000/api" : "/api"
 
 export const axiosInstance = axios.create({
@@ -7,7 +9,7 @@ export const axiosInstance = axios.create({
 
 //attach token
 axiosInstance.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     if (token) {
         config.headers.Authorization = `Bearer ${token}`
@@ -19,14 +21,19 @@ axiosInstance.interceptors.request.use((config) => {
 //handle expired/invalid token
 axiosInstance.interceptors.response.use(
     (res) => res,
-    (err) => {
-        const isAuthRoute = err.config?.url?.includes("/login")
+    async (err) => {
+        const status = err.response?.status
+        const code = err.response?.data?.code
 
-        // if (err.response?.status === 401 && !isAuthRoute) {
-        //     localStorage.removeItem("accessToken");
-        //     window.location.href = "/login";
-        // }
-
+        if (status === 401 &&
+            (code === "SESSION_EXPIRED" || code === "INVALID_TOKEN")
+        ) {
+            sessionStorage.removeItem("token")
+            const qrEntryPath = sessionStorage.getItem('qrEntryPath')
+            if (qrEntryPath) {
+                window.location.href = qrEntryPath
+            }
+        }
         return Promise.reject(err);
     }
 )

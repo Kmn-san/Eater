@@ -25,6 +25,7 @@ export default function OrderPage() {
         return <LoadingState />;
     }
 
+
     const toggleOrder = (orderId) => {
         // If clicking the same order, collapse it. Otherwise, expand the new one.
         setExpandedOrderId((prev) => (prev === orderId ? null : orderId));

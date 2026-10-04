@@ -4,11 +4,12 @@ import Summary from "../component/CartPage/Summary";
 import { useCart } from "../context/CartContext";
 import EmptyCartPage from "../component/CartPage/EmptyCart";
 import useCreateOrder from "../hooks/useCreateOrder";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import ErrorState from "../component/ErrorState";
 
 export default function CartPage() {
     const { cartItems, clearCart } = useCart()
-    const { mutate, isPending } = useCreateOrder()
+    const { mutate, isPending, error } = useCreateOrder()
     const navigate = useNavigate();
 
     const subtotal = cartItems.reduce(
@@ -49,6 +50,10 @@ export default function CartPage() {
 
     if (cartItems.length === 0) {
         return <EmptyCartPage />
+    }
+
+    if (error) {
+        return <ErrorState message={error.code} />
     }
     return (
         <div className="min-h-screen bg-[#FBF3DF] text-[#241A12] font-[Inter]">

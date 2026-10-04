@@ -38,3 +38,8 @@ export const fetchOrderById = async (orderId) => {
     const response = await axiosInstance.get(`/orders/${orderId}`)
     return response.data
 }
+
+export const refreshToken = async () => {
+    const response = await axiosInstance.post(`/sessions/refresh`)
+    return response.data
+}
