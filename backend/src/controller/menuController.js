@@ -35,6 +35,8 @@ export const getAvailable = async (req, res) => {
     try {
         const { restaurant_code } = req.params;
         const { itemIds } = req.body;
+        console.log(itemIds);
+        
         if (!restaurant_code || itemIds.length === 0) {
             return res.status(401).json({ message: "Missing required data", success: false })
         }

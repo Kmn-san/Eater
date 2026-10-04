@@ -6,13 +6,24 @@ import EmptyCartPage from "../component/CartPage/EmptyCart";
 import useCreateOrder from "../hooks/useCreateOrder";
 import { useNavigate, useParams } from "react-router-dom";
 import ErrorState from "../component/ErrorState";
-import useItemDetail from "../hooks/useItemDetail";
+import { checkAvailable } from "../lib/api";
+import useCheckAvailability from "../hooks/useCheckAvailability";
+import LoadingState from "../component/LoadingState";
 
 export default function CartPage() {
     const { restaurantCode } = useParams();
-    const { cartItems, clearCart } = useCart()
-    const { mutate, isPending, error } = useCreateOrder()
     const navigate = useNavigate();
+
+    const { cartItems, clearCart } = useCart()
+
+    const itemIds = cartItems.map(item => item.id)
+
+    const { data, isLoading, isError } = useCheckAvailability({ restaurantCode, itemIds });
+
+    const hasUnavailableItems = data?.result?.some(
+        (item) => item.is_available === false
+    ) ?? false;
+    const { mutate, isPending, error } = useCreateOrder()
 
     const subtotal = cartItems.reduce(
         (total, item) => {
@@ -28,19 +39,6 @@ export default function CartPage() {
     const serviceCharge = subtotal * 0.1;
 
     const total = subtotal + serviceTax + serviceCharge;
-
-    const checkAvailable = () => {
-        const ids = []
-        cartItems.forEach(item => {
-            if (!ids.includes(item.id)) {
-                ids.push(item.id)
-            }
-        });
-        console.log(ids);
-
-    }
-
-    checkAvailable()
 
     const handleCheckout = () => {
         const checkoutItem = cartItems.map((item) => ({
@@ -67,7 +65,10 @@ export default function CartPage() {
         return <EmptyCartPage />
     }
 
-    if (error) {
+    if (isLoading || isPending) {
+        return <LoadingState />
+    }
+    if (isError || error) {
         return <ErrorState message={error.code} />
     }
     return (
@@ -77,7 +78,7 @@ export default function CartPage() {
 
             <main className="mx-auto grid max-w-5xl gap-6 px-6 py-8 md:grid-cols-[1fr_320px]">
                 {/* Cart Items */}
-                <CartItems cartItems={cartItems} />
+                <CartItems cartItems={cartItems} availability={data?.result ?? []} />
 
                 {/* Summary */}
                 <Summary
@@ -87,7 +88,7 @@ export default function CartPage() {
                     total={total}
                     handleCheckout={handleCheckout}
                     isPending={isPending}
-                    isCheckoutDisabled={isPending} />
+                    isCheckoutDisabled={isPending || hasUnavailableItems} />
             </main>
         </div>
     );

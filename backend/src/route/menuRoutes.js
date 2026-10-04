@@ -3,7 +3,7 @@ import { getAvailable, getItemDetail, getMenu } from "../controller/menuControll
 
 const router = Router()
 router.get("/:restaurant_code", getMenu)
-router.get("/:restaurant_code/checkAvailable", getAvailable)
+router.post("/:restaurant_code/checkAvailable", getAvailable)
 router.get("/:restaurant_code/:item_id", getItemDetail)
 
 export default router;

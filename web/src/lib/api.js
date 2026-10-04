@@ -39,7 +39,8 @@ export const fetchOrderById = async (orderId) => {
     return response.data
 }
 
-export const refreshToken = async () => {
-    const response = await axiosInstance.post(`/sessions/refresh`)
+export const checkAvailable = async (restaurantCode, itemIds) => {
+
+    const response = await axiosInstance.post(`menu/${restaurantCode}/checkAvailable`, { itemIds })
     return response.data
 }
