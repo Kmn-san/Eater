@@ -134,3 +134,21 @@ export const fetchItemDetail = async (restaurant_code, item_id) => {
     })
     return result
 }
+
+export const checkAvailable = async (restaurant_code, ids) => {
+    const { rows } = await query(
+        `SELECT 
+            i.id,  
+            i.is_available, 
+            i.price_cents
+
+        FROM menu_items i
+        JOIN menu_categories c
+            ON c.id = i.category_id
+        JOIN restaurant r
+            ON r.id = c.restaurant_id
+        WHERE i.id = ANY($1) AND r.restaurant_code = $2
+        `, [ids, restaurant_code]
+    )
+    return rows
+}

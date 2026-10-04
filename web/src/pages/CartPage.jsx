@@ -4,10 +4,12 @@ import Summary from "../component/CartPage/Summary";
 import { useCart } from "../context/CartContext";
 import EmptyCartPage from "../component/CartPage/EmptyCart";
 import useCreateOrder from "../hooks/useCreateOrder";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ErrorState from "../component/ErrorState";
+import useItemDetail from "../hooks/useItemDetail";
 
 export default function CartPage() {
+    const { restaurantCode } = useParams();
     const { cartItems, clearCart } = useCart()
     const { mutate, isPending, error } = useCreateOrder()
     const navigate = useNavigate();
@@ -26,6 +28,19 @@ export default function CartPage() {
     const serviceCharge = subtotal * 0.1;
 
     const total = subtotal + serviceTax + serviceCharge;
+
+    const checkAvailable = () => {
+        const ids = []
+        cartItems.forEach(item => {
+            if (!ids.includes(item.id)) {
+                ids.push(item.id)
+            }
+        });
+        console.log(ids);
+
+    }
+
+    checkAvailable()
 
     const handleCheckout = () => {
         const checkoutItem = cartItems.map((item) => ({
@@ -65,7 +80,14 @@ export default function CartPage() {
                 <CartItems cartItems={cartItems} />
 
                 {/* Summary */}
-                <Summary serviceTax={serviceTax} serviceCharge={serviceCharge} subtotal={subtotal} total={total} handleCheckout={handleCheckout} isPending={isPending} />
+                <Summary
+                    serviceTax={serviceTax}
+                    serviceCharge={serviceCharge}
+                    subtotal={subtotal}
+                    total={total}
+                    handleCheckout={handleCheckout}
+                    isPending={isPending}
+                    isCheckoutDisabled={isPending} />
             </main>
         </div>
     );

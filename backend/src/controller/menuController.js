@@ -18,12 +18,33 @@ export const getMenu = async (req, res) => {
 export const getItemDetail = async (req, res) => {
     try {
         const { restaurant_code, item_id } = req.params;
-        
+
         const result = await menuService.fetchItemDetail(restaurant_code, item_id);
 
         res.status(200).json({ success: true, result })
     } catch (error) {
         console.error("Error in getItemDetail controller: ", error.message);
+        return res.status(500).json({
+            code: "INTERNAL_SERVER_ERROR",
+            error: error.message
+        });
+    }
+}
+
+export const getAvailable = async (req, res) => {
+    try {
+        const { restaurant_code } = req.params;
+        const { itemIds } = req.body;
+        if (!restaurant_code || itemIds.length === 0) {
+            return res.status(401).json({ message: "Missing required data", success: false })
+        }
+
+        const result = await menuService.checkAvailable(restaurant_code, itemIds)
+        console.log(result);
+
+        res.status(200).json({ success: true, result })
+    } catch (error) {
+        console.error("Error in getAvailable controller: ", error.message);
         return res.status(500).json({
             code: "INTERNAL_SERVER_ERROR",
             error: error.message
